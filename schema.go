@@ -75,9 +75,9 @@ func (s *BuzzSchema) Name() string {
 	return s.name
 }
 
-func (s *BuzzSchema) Extend(refObj any, fields ...BuzzField) *BuzzSchema {
+func (s *BuzzSchema) Extend(name string, refObj any, fields ...BuzzField) *BuzzSchema {
 	fields = append(fields, s.fields...)
-	return Schema(s.name, refObj, fields...)
+	return Schema(name, refObj, fields...)
 }
 
 func (s *BuzzSchema) Pick() *BuzzSchema {

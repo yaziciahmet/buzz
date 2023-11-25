@@ -50,6 +50,7 @@ func Test_SchemaExtendSuccess(t *testing.T) {
 		String("Name").Min(2).Max(20),
 		String("Email").Email(),
 	).Extend(
+		"UserExtended",
 		UserExtended{},
 		String("String").Min(5),
 	).Validate(UserExtended{
@@ -70,6 +71,7 @@ func Test_SchemaExtendFail(t *testing.T) {
 		String("Name").Min(2).Max(20),
 		String("Email").Email(),
 	).Extend(
+		"UserExtended",
 		UserExtended{},
 		String("String").Min(5),
 	).Validate(UserExtended{
