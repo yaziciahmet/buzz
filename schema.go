@@ -74,3 +74,16 @@ func (s *BuzzSchema) Type() reflect.Type {
 func (s *BuzzSchema) Name() string {
 	return s.name
 }
+
+func (s *BuzzSchema) Extend(refObj any, fields ...BuzzField) *BuzzSchema {
+	fields = append(fields, s.fields...)
+	return Schema(s.name, refObj, fields...)
+}
+
+func (s *BuzzSchema) Pick() *BuzzSchema {
+	return nil
+}
+
+func (s *BuzzSchema) Omit() *BuzzSchema {
+	return nil
+}

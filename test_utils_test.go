@@ -10,6 +10,13 @@ type User struct {
 	Email string
 }
 
+type UserExtended struct {
+	Id     int
+	Name   string
+	Email  string
+	String string
+}
+
 type UserWithAddress struct {
 	Id      int
 	Name    string

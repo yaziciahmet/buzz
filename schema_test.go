@@ -41,3 +41,43 @@ func Test_SchemaNestedStructSuccess(t *testing.T) {
 		t.FailNow()
 	}
 }
+
+func Test_SchemaExtendSuccess(t *testing.T) {
+	if err := Schema(
+		"User",
+		User{},
+		Int("Id").Min(0).Max(1000),
+		String("Name").Min(2).Max(20),
+		String("Email").Email(),
+	).Extend(
+		UserExtended{},
+		String("String").Min(5),
+	).Validate(UserExtended{
+		Id:     1000,
+		Name:   "ragnarok",
+		Email:  "ahmet@gmail.com",
+		String: "brother",
+	}); err != nil {
+		t.FailNow()
+	}
+}
+
+func Test_SchemaExtendFail(t *testing.T) {
+	if err := Schema(
+		"User",
+		User{},
+		Int("Id").Min(0).Max(1000),
+		String("Name").Min(2).Max(20),
+		String("Email").Email(),
+	).Extend(
+		UserExtended{},
+		String("String").Min(5),
+	).Validate(UserExtended{
+		Id:     10000,
+		Name:   "ragnarok",
+		Email:  "ahmet@gmail.com",
+		String: "bro",
+	}); err == nil {
+		t.FailNow()
+	}
+}
