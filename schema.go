@@ -58,12 +58,10 @@ func Schema(name string, refObj any, fields ...BuzzField) *BuzzSchema {
 }
 
 func (s *BuzzSchema) Validate(obj any) error {
-	var err error
-
 	valueObj := reflect.ValueOf(obj)
 	for _, f := range s.fields {
 		valueField := valueObj.FieldByName(f.Name())
-		if err = f.Validate(valueField.Interface()); err != nil {
+		if err := f.Validate(valueField.Interface()); err != nil {
 			return err
 		}
 	}
