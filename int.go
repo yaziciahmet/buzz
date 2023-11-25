@@ -17,16 +17,16 @@ func Int(name string) *BuzzInt {
 	return &BuzzInt{name: name}
 }
 
-func (f *BuzzInt) Name() string {
-	return f.name
+func (i *BuzzInt) Name() string {
+	return i.name
 }
 
-func (f *BuzzInt) Type() reflect.Type {
+func (i *BuzzInt) Type() reflect.Type {
 	return intReflectType
 }
 
-func (f *BuzzInt) Validate(v any) error {
-	for _, valFn := range f.validateFuncs {
+func (i *BuzzInt) Validate(v any) error {
+	for _, valFn := range i.validateFuncs {
 		if err := valFn(v.(int)); err != nil {
 			return err
 		}
@@ -34,22 +34,26 @@ func (f *BuzzInt) Validate(v any) error {
 	return nil
 }
 
-func (f *BuzzInt) Min(min int) *BuzzInt {
-	f.validateFuncs = append(f.validateFuncs, func(v int) error {
+func (i *BuzzInt) Min(min int) *BuzzInt {
+	i.addValidateFunc(func(v int) error {
 		if min > v {
-			return makeValidationError(f.name, "min", "min failed")
+			return makeValidationError(i.name, "min", "min failed")
 		}
 		return nil
 	})
-	return f
+	return i
 }
 
-func (f *BuzzInt) Max(max int) *BuzzInt {
-	f.validateFuncs = append(f.validateFuncs, func(v int) error {
+func (i *BuzzInt) Max(max int) *BuzzInt {
+	i.addValidateFunc(func(v int) error {
 		if max < v {
-			return makeValidationError(f.name, "max", "max failed")
+			return makeValidationError(i.name, "max", "max failed")
 		}
 		return nil
 	})
-	return f
+	return i
+}
+
+func (i *BuzzInt) addValidateFunc(fn BuzzIntValidateFunc) {
+	i.validateFuncs = append(i.validateFuncs, fn)
 }

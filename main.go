@@ -1,8 +1,9 @@
 package main
 
 type Bro struct {
-	Id  int
-	Sis Sis
+	Id   int
+	Sis  Sis
+	Name string
 }
 
 type Sis struct {
@@ -19,6 +20,7 @@ func main() {
 		"bro",
 		Bro{},
 		Int("Id").Min(15),
+		String("Name").Min(0),
 		sisSchema,
 	)
 
