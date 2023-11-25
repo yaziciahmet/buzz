@@ -31,11 +31,12 @@ func Schema(name string, refObj any, fields ...BuzzField) *BuzzSchema {
 
 	for _, field := range fields {
 		fieldName := field.Name()
+		fieldType := field.Type()
 
 		found := false
 		for _, reflectField := range refFields {
 			if reflectField.Name == fieldName {
-				if reflectField.Type != field.Type() {
+				if reflectField.Type != fieldType {
 					panic(fmt.Sprintf("buzz: field '%s' has mismatching types", fieldName))
 				}
 
