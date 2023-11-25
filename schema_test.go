@@ -83,3 +83,77 @@ func Test_SchemaExtendFail(t *testing.T) {
 		t.FailNow()
 	}
 }
+
+func Test_SchemaPickSuccess(t *testing.T) {
+	if err := Schema(
+		"User",
+		User{},
+		Int("Id").Min(0).Max(1000),
+		String("Name").Min(2).Max(20),
+		String("Email").Email(),
+	).Pick(
+		"Id",
+		Id{},
+		"Id",
+	).Validate(Id{
+		Id: 100,
+	}); err != nil {
+		t.FailNow()
+	}
+}
+
+func Test_SchemaPickFail(t *testing.T) {
+	if err := Schema(
+		"User",
+		User{},
+		Int("Id").Min(0).Max(1000),
+		String("Name").Min(2).Max(20),
+		String("Email").Email(),
+	).Pick(
+		"Id",
+		Id{},
+		"Id",
+	).Validate(Id{
+		Id: 10000,
+	}); err == nil {
+		t.FailNow()
+	}
+}
+
+func Test_SchemaOmitSuccess(t *testing.T) {
+	if err := Schema(
+		"User",
+		User{},
+		Int("Id").Min(0).Max(1000),
+		String("Name").Min(2).Max(20),
+		String("Email").Email(),
+	).Omit(
+		"Id",
+		Id{},
+		"Name",
+		"Email",
+	).Validate(Id{
+		Id: 100,
+	}); err != nil {
+		t.FailNow()
+	}
+}
+
+func Test_SchemaOmitFail(t *testing.T) {
+	if err := Schema(
+		"User",
+		User{},
+		Int("Id").Min(0).Max(1000),
+		String("Name").Min(2).Max(20),
+		String("Email").Email(),
+	).Omit(
+		"Id",
+		Id{},
+		"Name",
+		"Email",
+	).Validate(Id{
+		Id: 10000,
+	}); err == nil {
+		t.FailNow()
+	}
+}

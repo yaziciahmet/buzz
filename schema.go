@@ -76,14 +76,41 @@ func (s *BuzzSchema) Name() string {
 }
 
 func (s *BuzzSchema) Extend(name string, refObj any, fields ...BuzzField) *BuzzSchema {
-	fields = append(fields, s.fields...)
-	return Schema(name, refObj, fields...)
+	newFields := append(fields, s.fields...)
+	return Schema(name, refObj, newFields...)
 }
 
-func (s *BuzzSchema) Pick() *BuzzSchema {
-	return nil
+func (s *BuzzSchema) Pick(name string, refObj any, fieldNames ...string) *BuzzSchema {
+	var newFields []BuzzField
+	for _, name := range fieldNames {
+		for _, field := range s.fields {
+			if field.Name() == name {
+				newFields = append(newFields, field)
+				break
+			}
+		}
+	}
+
+	return Schema(name, refObj, newFields...)
 }
 
-func (s *BuzzSchema) Omit() *BuzzSchema {
-	return nil
+func (s *BuzzSchema) Omit(name string, refObj any, fieldNames ...string) *BuzzSchema {
+	var newFields []BuzzField
+	for _, field := range s.fields {
+		fieldName := field.Name()
+
+		found := false
+		for _, name := range fieldNames {
+			if fieldName == name {
+				found = true
+				break
+			}
+		}
+
+		if !found {
+			newFields = append(newFields, field)
+		}
+	}
+
+	return Schema(name, refObj, newFields...)
 }
