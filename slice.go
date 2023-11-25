@@ -9,6 +9,7 @@ var (
 )
 
 type BuzzSliceValidateFunc[T any] func(v []T) error
+type BuzzSliceElementValidateFunc[T any] func(v T) error
 
 type BuzzSlice[T any] struct {
 	name          string
@@ -66,7 +67,7 @@ func (s *BuzzSlice[T]) Len(l int) *BuzzSlice[T] {
 	return s
 }
 
-func (s *BuzzSlice[T]) ForEach(fn func(T) error) *BuzzSlice[T] {
+func (s *BuzzSlice[T]) ForEach(fn BuzzSliceElementValidateFunc[T]) *BuzzSlice[T] {
 	s.addValidateFunc(func(v []T) error {
 		for _, el := range v {
 			if err := fn(el); err != nil {
