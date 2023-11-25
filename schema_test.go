@@ -5,8 +5,7 @@ import (
 )
 
 func Test_SchemaBasicStructSuccess(t *testing.T) {
-	Schema(
-		"User",
+	if err := Schema(
 		User{},
 		Int("Id").Min(0).Max(1000),
 		String("Name").Min(2).Max(20),
@@ -15,21 +14,21 @@ func Test_SchemaBasicStructSuccess(t *testing.T) {
 		Id:    100,
 		Name:  "ah",
 		Email: "ahmet@mail.com",
-	})
+	}); err != nil {
+		t.FailNow()
+	}
 }
 
 func Test_SchemaNestedStructSuccess(t *testing.T) {
 	if err := Schema(
-		"UserWithAddress",
 		UserWithAddress{},
 		Int("Id").Min(0).Max(1000),
 		String("Name").Min(2).Max(20),
 		Schema(
-			"Address",
 			Address{},
 			Int("ZipCode").Min(0).Max(100000),
 			String("Text").Min(5).Max(100),
-		),
+		).WithName("Address"),
 	).Validate(UserWithAddress{
 		Id:   1000,
 		Name: "ah",
@@ -44,13 +43,11 @@ func Test_SchemaNestedStructSuccess(t *testing.T) {
 
 func Test_SchemaExtendSuccess(t *testing.T) {
 	if err := Schema(
-		"User",
 		User{},
 		Int("Id").Min(0).Max(1000),
 		String("Name").Min(2).Max(20),
 		String("Email").Email(),
 	).Extend(
-		"UserExtended",
 		UserExtended{},
 		String("String").Min(5),
 	).Validate(UserExtended{
@@ -65,13 +62,11 @@ func Test_SchemaExtendSuccess(t *testing.T) {
 
 func Test_SchemaExtendFail(t *testing.T) {
 	if err := Schema(
-		"User",
 		User{},
 		Int("Id").Min(0).Max(1000),
 		String("Name").Min(2).Max(20),
 		String("Email").Email(),
 	).Extend(
-		"UserExtended",
 		UserExtended{},
 		String("String").Min(5),
 	).Validate(UserExtended{
@@ -86,13 +81,11 @@ func Test_SchemaExtendFail(t *testing.T) {
 
 func Test_SchemaPickSuccess(t *testing.T) {
 	if err := Schema(
-		"User",
 		User{},
 		Int("Id").Min(0).Max(1000),
 		String("Name").Min(2).Max(20),
 		String("Email").Email(),
 	).Pick(
-		"Id",
 		Id{},
 		"Id",
 	).Validate(Id{
@@ -104,13 +97,11 @@ func Test_SchemaPickSuccess(t *testing.T) {
 
 func Test_SchemaPickFail(t *testing.T) {
 	if err := Schema(
-		"User",
 		User{},
 		Int("Id").Min(0).Max(1000),
 		String("Name").Min(2).Max(20),
 		String("Email").Email(),
 	).Pick(
-		"Id",
 		Id{},
 		"Id",
 	).Validate(Id{
@@ -122,13 +113,11 @@ func Test_SchemaPickFail(t *testing.T) {
 
 func Test_SchemaOmitSuccess(t *testing.T) {
 	if err := Schema(
-		"User",
 		User{},
 		Int("Id").Min(0).Max(1000),
 		String("Name").Min(2).Max(20),
 		String("Email").Email(),
 	).Omit(
-		"Id",
 		Id{},
 		"Name",
 		"Email",
@@ -141,13 +130,11 @@ func Test_SchemaOmitSuccess(t *testing.T) {
 
 func Test_SchemaOmitFail(t *testing.T) {
 	if err := Schema(
-		"User",
 		User{},
 		Int("Id").Min(0).Max(1000),
 		String("Name").Min(2).Max(20),
 		String("Email").Email(),
 	).Omit(
-		"Id",
 		Id{},
 		"Name",
 		"Email",

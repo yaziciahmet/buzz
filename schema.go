@@ -17,7 +17,7 @@ type BuzzSchema struct {
 	refType reflect.Type
 }
 
-func Schema(name string, refObj any, fields ...BuzzField) *BuzzSchema {
+func Schema(refObj any, fields ...BuzzField) *BuzzSchema {
 	refType := reflect.TypeOf(refObj)
 	if refType.Kind() != reflect.Struct {
 		panic("buzz: reference object is not struct")
@@ -51,7 +51,6 @@ func Schema(name string, refObj any, fields ...BuzzField) *BuzzSchema {
 	}
 
 	return &BuzzSchema{
-		name:    name,
 		fields:  fields,
 		refType: refType,
 	}
@@ -77,12 +76,12 @@ func (s *BuzzSchema) Name() string {
 	return s.name
 }
 
-func (s *BuzzSchema) Extend(name string, refObj any, fields ...BuzzField) *BuzzSchema {
+func (s *BuzzSchema) Extend(refObj any, fields ...BuzzField) *BuzzSchema {
 	newFields := append(fields, s.fields...)
-	return Schema(name, refObj, newFields...)
+	return Schema(refObj, newFields...)
 }
 
-func (s *BuzzSchema) Pick(name string, refObj any, fieldNames ...string) *BuzzSchema {
+func (s *BuzzSchema) Pick(refObj any, fieldNames ...string) *BuzzSchema {
 	var newFields []BuzzField
 	for _, name := range fieldNames {
 		for _, field := range s.fields {
@@ -93,10 +92,10 @@ func (s *BuzzSchema) Pick(name string, refObj any, fieldNames ...string) *BuzzSc
 		}
 	}
 
-	return Schema(name, refObj, newFields...)
+	return Schema(refObj, newFields...)
 }
 
-func (s *BuzzSchema) Omit(name string, refObj any, fieldNames ...string) *BuzzSchema {
+func (s *BuzzSchema) Omit(refObj any, fieldNames ...string) *BuzzSchema {
 	var newFields []BuzzField
 	for _, field := range s.fields {
 		fieldName := field.Name()
@@ -114,7 +113,7 @@ func (s *BuzzSchema) Omit(name string, refObj any, fieldNames ...string) *BuzzSc
 		}
 	}
 
-	return Schema(name, refObj, newFields...)
+	return Schema(refObj, newFields...)
 }
 
 func (s *BuzzSchema) Fields() []BuzzField {

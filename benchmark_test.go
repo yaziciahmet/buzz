@@ -4,7 +4,6 @@ import "testing"
 
 func Benchmark_SimpleStruct(b *testing.B) {
 	schema := Schema(
-		"User",
 		User{},
 		Int("Id").Min(0).Max(1000),
 		String("Name").Min(2).Max(20),
