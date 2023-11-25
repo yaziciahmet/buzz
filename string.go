@@ -119,7 +119,6 @@ func (s *BuzzString) Contains(str string) *BuzzString {
 func (s *BuzzString) StartsWith(str string) *BuzzString {
 	s.addValidateFunc(func(v string) error {
 		if !strings.HasPrefix(v, str) {
-
 			return makeValidationError(s.name, "startsWith", "startsWith failed")
 		}
 		return nil
