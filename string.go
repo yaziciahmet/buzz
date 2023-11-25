@@ -1,6 +1,9 @@
 package buzz
 
-import "reflect"
+import (
+	"net/mail"
+	"reflect"
+)
 
 var (
 	stringReflectType = reflect.TypeOf("")
@@ -48,6 +51,27 @@ func (s *BuzzString) Max(max int) *BuzzString {
 	s.addValidateFunc(func(v string) error {
 		if max < len(v) {
 			return makeValidationError(s.name, "max", "max failed")
+		}
+		return nil
+	})
+	return s
+}
+
+func (s *BuzzString) Len(l int) *BuzzString {
+	s.addValidateFunc(func(v string) error {
+		if l != len(v) {
+			return makeValidationError(s.name, "len", "len failed")
+		}
+		return nil
+	})
+	return s
+}
+
+func (s *BuzzString) Email() *BuzzString {
+	s.addValidateFunc(func(v string) error {
+		_, err := mail.ParseAddress(v)
+		if err != nil {
+			return makeValidationError(s.name, "email", "email failed")
 		}
 		return nil
 	})
