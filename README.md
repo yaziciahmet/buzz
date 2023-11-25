@@ -1,10 +1,14 @@
+# Buzz Go Validator
+
+```go
 schema := buzz.Schema[User](
 	buzz.UUID("id"),
 	buzz.String("email").Email(),
 )
+```
 
-func Extend[T]() *Schema[T] {}
+Extend
 
-Pick[T]
+Pick
 
-Omit[T]
+Omit
