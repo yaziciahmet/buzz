@@ -1,5 +1,9 @@
 package buzz
 
+type TestStruct struct {
+	String string
+}
+
 type User struct {
 	Id    int
 	Name  string
