@@ -116,3 +116,15 @@ func (s *BuzzSchema) Omit(name string, refObj any, fieldNames ...string) *BuzzSc
 
 	return Schema(name, refObj, newFields...)
 }
+
+func (s *BuzzSchema) Fields() []BuzzField {
+	return s.fields
+}
+
+func (s *BuzzSchema) WithName(name string) *BuzzSchema {
+	return &BuzzSchema{
+		name:    name,
+		fields:  s.fields,
+		refType: s.refType,
+	}
+}
