@@ -85,46 +85,6 @@ func (s *BuzzSchema[T]) Name() string {
 	return s.name
 }
 
-func (s *BuzzSchema[T]) Extend(refObj any, fields ...BuzzField) *BuzzSchema[any] {
-	newFields := append(fields, s.fields...)
-	return Schema(refObj, newFields...)
-}
-
-func (s *BuzzSchema[T]) Pick(refObj any, fieldNames ...string) *BuzzSchema[any] {
-	var newFields []BuzzField
-	for _, name := range fieldNames {
-		for _, field := range s.fields {
-			if field.Name() == name {
-				newFields = append(newFields, field)
-				break
-			}
-		}
-	}
-
-	return Schema(refObj, newFields...)
-}
-
-func (s *BuzzSchema[T]) Omit(refObj any, fieldNames ...string) *BuzzSchema[any] {
-	var newFields []BuzzField
-	for _, field := range s.fields {
-		fieldName := field.Name()
-
-		found := false
-		for _, name := range fieldNames {
-			if fieldName == name {
-				found = true
-				break
-			}
-		}
-
-		if !found {
-			newFields = append(newFields, field)
-		}
-	}
-
-	return Schema(refObj, newFields...)
-}
-
 func (s *BuzzSchema[T]) Fields() []BuzzField {
 	return s.fields
 }
@@ -144,4 +104,44 @@ func (s *BuzzSchema[T]) Custom(fn func(T) error) *BuzzSchema[T] {
 
 func (s *BuzzSchema[T]) addValidateFunc(fn BuzzSchemaValidateFunc[T]) {
 	s.validateFuncs = append(s.validateFuncs, fn)
+}
+
+func Extend[T, K any](schema *BuzzSchema[K], refObj T, fields ...BuzzField) *BuzzSchema[T] {
+	newFields := append(fields, schema.fields...)
+	return Schema(refObj, newFields...)
+}
+
+func Pick[T, K any](schema *BuzzSchema[K], refObj T, fieldNames ...string) *BuzzSchema[T] {
+	var newFields []BuzzField
+	for _, name := range fieldNames {
+		for _, field := range schema.fields {
+			if field.Name() == name {
+				newFields = append(newFields, field)
+				break
+			}
+		}
+	}
+
+	return Schema(refObj, newFields...)
+}
+
+func Omit[T, K any](schema *BuzzSchema[K], refObj T, fieldNames ...string) *BuzzSchema[T] {
+	var newFields []BuzzField
+	for _, field := range schema.fields {
+		fieldName := field.Name()
+
+		found := false
+		for _, name := range fieldNames {
+			if fieldName == name {
+				found = true
+				break
+			}
+		}
+
+		if !found {
+			newFields = append(newFields, field)
+		}
+	}
+
+	return Schema(refObj, newFields...)
 }

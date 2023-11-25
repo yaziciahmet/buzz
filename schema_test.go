@@ -43,12 +43,13 @@ func Test_SchemaNestedStructSuccess(t *testing.T) {
 }
 
 func Test_SchemaExtendSuccess(t *testing.T) {
-	if err := Schema(
-		User{},
-		Int("Id").Min(0).Max(1000),
-		String("Name").Min(2).Max(20),
-		String("Email").Email(),
-	).Extend(
+	if err := Extend(
+		Schema(
+			User{},
+			Int("Id").Min(0).Max(1000),
+			String("Name").Min(2).Max(20),
+			String("Email").Email(),
+		),
 		UserExtended{},
 		String("String").Min(5),
 	).Validate(UserExtended{
@@ -62,12 +63,13 @@ func Test_SchemaExtendSuccess(t *testing.T) {
 }
 
 func Test_SchemaExtendFail(t *testing.T) {
-	if err := Schema(
-		User{},
-		Int("Id").Min(0).Max(1000),
-		String("Name").Min(2).Max(20),
-		String("Email").Email(),
-	).Extend(
+	if err := Extend(
+		Schema(
+			User{},
+			Int("Id").Min(0).Max(1000),
+			String("Name").Min(2).Max(20),
+			String("Email").Email(),
+		),
 		UserExtended{},
 		String("String").Min(5),
 	).Validate(UserExtended{
@@ -81,12 +83,13 @@ func Test_SchemaExtendFail(t *testing.T) {
 }
 
 func Test_SchemaPickSuccess(t *testing.T) {
-	if err := Schema(
-		User{},
-		Int("Id").Min(0).Max(1000),
-		String("Name").Min(2).Max(20),
-		String("Email").Email(),
-	).Pick(
+	if err := Pick(
+		Schema(
+			User{},
+			Int("Id").Min(0).Max(1000),
+			String("Name").Min(2).Max(20),
+			String("Email").Email(),
+		),
 		Id{},
 		"Id",
 	).Validate(Id{
@@ -97,12 +100,13 @@ func Test_SchemaPickSuccess(t *testing.T) {
 }
 
 func Test_SchemaPickFail(t *testing.T) {
-	if err := Schema(
-		User{},
-		Int("Id").Min(0).Max(1000),
-		String("Name").Min(2).Max(20),
-		String("Email").Email(),
-	).Pick(
+	if err := Pick(
+		Schema(
+			User{},
+			Int("Id").Min(0).Max(1000),
+			String("Name").Min(2).Max(20),
+			String("Email").Email(),
+		),
 		Id{},
 		"Id",
 	).Validate(Id{
@@ -113,12 +117,13 @@ func Test_SchemaPickFail(t *testing.T) {
 }
 
 func Test_SchemaOmitSuccess(t *testing.T) {
-	if err := Schema(
-		User{},
-		Int("Id").Min(0).Max(1000),
-		String("Name").Min(2).Max(20),
-		String("Email").Email(),
-	).Omit(
+	if err := Omit(
+		Schema(
+			User{},
+			Int("Id").Min(0).Max(1000),
+			String("Name").Min(2).Max(20),
+			String("Email").Email(),
+		),
 		Id{},
 		"Name",
 		"Email",
@@ -130,12 +135,13 @@ func Test_SchemaOmitSuccess(t *testing.T) {
 }
 
 func Test_SchemaOmitFail(t *testing.T) {
-	if err := Schema(
-		User{},
-		Int("Id").Min(0).Max(1000),
-		String("Name").Min(2).Max(20),
-		String("Email").Email(),
-	).Omit(
+	if err := Omit(
+		Schema(
+			User{},
+			Int("Id").Min(0).Max(1000),
+			String("Name").Min(2).Max(20),
+			String("Email").Email(),
+		),
 		Id{},
 		"Name",
 		"Email",
@@ -167,13 +173,17 @@ func Test_SchemaCustomSuccess(t *testing.T) {
 }
 
 func Test_SchemaCustomOnPickFail(t *testing.T) {
-	if err := Schema(
-		User{},
-		Int("Id").Min(0).Max(1000),
-		String("Name").Min(2).Max(20),
-		String("Email").Email(),
-	).Pick(Id{}, "Id").Custom(func(id any) error {
-		if id.(Id).Id != 1000 {
+	if err := Pick(
+		Schema(
+			User{},
+			Int("Id").Min(0).Max(1000),
+			String("Name").Min(2).Max(20),
+			String("Email").Email(),
+		),
+		Id{},
+		"Id",
+	).Custom(func(id Id) error {
+		if id.Id != 1000 {
 			return errors.New("you shall not pass")
 		}
 		return nil
