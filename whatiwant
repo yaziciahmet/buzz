@@ -1,0 +1,10 @@
+schema := buzz.Schema[User](
+	buzz.UUID("id"),
+	buzz.String("email").Email(),
+)
+
+func Extend[T]() *Schema[T] {}
+
+Pick[T]
+
+Omit[T]
