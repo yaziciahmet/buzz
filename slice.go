@@ -67,6 +67,26 @@ func (s *BuzzSlice[T]) Len(l int) *BuzzSlice[T] {
 	return s
 }
 
+func (s *BuzzSlice[T]) Nonempty() *BuzzSlice[T] {
+	s.addValidateFunc(func(v []T) error {
+		if len(v) > 0 {
+			return makeValidationError(s.name, "nonempty", "nonempty failed")
+		}
+		return nil
+	})
+	return s
+}
+
+func (s *BuzzSlice[T]) Nonnil() *BuzzSlice[T] {
+	s.addValidateFunc(func(v []T) error {
+		if v == nil {
+			return makeValidationError(s.name, "nonnil", "nonnil failed")
+		}
+		return nil
+	})
+	return s
+}
+
 func (s *BuzzSlice[T]) ForEach(fn BuzzSliceElementValidateFunc[T]) *BuzzSlice[T] {
 	s.addValidateFunc(func(v []T) error {
 		for _, el := range v {
