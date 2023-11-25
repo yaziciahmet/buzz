@@ -1,4 +1,4 @@
-package main
+package buzz
 
 type ValidationError struct {
 	Field      string
