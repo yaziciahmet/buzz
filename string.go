@@ -136,6 +136,11 @@ func (s *BuzzString) EndsWith(str string) *BuzzString {
 	return s
 }
 
+func (s *BuzzString) Custom(fn BuzzStringValidateFunc) *BuzzString {
+	s.addValidateFunc(fn)
+	return s
+}
+
 func (s *BuzzString) addValidateFunc(fn BuzzStringValidateFunc) {
 	s.validateFuncs = append(s.validateFuncs, fn)
 }

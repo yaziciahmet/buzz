@@ -94,6 +94,11 @@ func (i *BuzzInt) NonPositive() *BuzzInt {
 	return i
 }
 
+func (i *BuzzInt) Custom(fn BuzzIntValidateFunc) *BuzzInt {
+	i.addValidateFunc(fn)
+	return i
+}
+
 func (i *BuzzInt) addValidateFunc(fn BuzzIntValidateFunc) {
 	i.validateFuncs = append(i.validateFuncs, fn)
 }

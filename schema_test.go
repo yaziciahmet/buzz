@@ -1,6 +1,7 @@
 package buzz
 
 import (
+	"errors"
 	"testing"
 )
 
@@ -140,6 +141,44 @@ func Test_SchemaOmitFail(t *testing.T) {
 		"Email",
 	).Validate(Id{
 		Id: 10000,
+	}); err == nil {
+		t.FailNow()
+	}
+}
+
+func Test_SchemaCustomSuccess(t *testing.T) {
+	if err := Schema(
+		User{},
+		Int("Id").Min(0).Max(1000),
+		String("Name").Min(2).Max(20),
+		String("Email").Email(),
+	).Custom(func(u User) error {
+		if u.Email != "ahmet@mail.com" {
+			return errors.New("you shall not pass")
+		}
+		return nil
+	}).Validate(User{
+		Id:    100,
+		Name:  "ahmet",
+		Email: "ahmet@mail.com",
+	}); err != nil {
+		t.FailNow()
+	}
+}
+
+func Test_SchemaCustomOnPickFail(t *testing.T) {
+	if err := Schema(
+		User{},
+		Int("Id").Min(0).Max(1000),
+		String("Name").Min(2).Max(20),
+		String("Email").Email(),
+	).Pick(Id{}, "Id").Custom(func(id any) error {
+		if id.(Id).Id != 1000 {
+			return errors.New("you shall not pass")
+		}
+		return nil
+	}).Validate(Id{
+		Id: 100,
 	}); err == nil {
 		t.FailNow()
 	}

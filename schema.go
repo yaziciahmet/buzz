@@ -5,19 +5,22 @@ import (
 	"reflect"
 )
 
+type BuzzSchemaValidateFunc[T any] func(T) error
+
 type BuzzField interface {
 	Name() string
 	Validate(v any) error
 	Type() reflect.Type
 }
 
-type BuzzSchema struct {
-	name    string
-	fields  []BuzzField
-	refType reflect.Type
+type BuzzSchema[T any] struct {
+	name          string
+	fields        []BuzzField
+	validateFuncs []BuzzSchemaValidateFunc[T]
+	refType       reflect.Type
 }
 
-func Schema(refObj any, fields ...BuzzField) *BuzzSchema {
+func Schema[T any](refObj T, fields ...BuzzField) *BuzzSchema[T] {
 	refType := reflect.TypeOf(refObj)
 	if refType.Kind() != reflect.Struct {
 		panic("buzz: reference object is not struct")
@@ -50,13 +53,13 @@ func Schema(refObj any, fields ...BuzzField) *BuzzSchema {
 		}
 	}
 
-	return &BuzzSchema{
+	return &BuzzSchema[T]{
 		fields:  fields,
 		refType: refType,
 	}
 }
 
-func (s *BuzzSchema) Validate(obj any) error {
+func (s *BuzzSchema[T]) Validate(obj any) error {
 	valueObj := reflect.ValueOf(obj)
 	for _, f := range s.fields {
 		valueField := valueObj.FieldByName(f.Name())
@@ -65,23 +68,29 @@ func (s *BuzzSchema) Validate(obj any) error {
 		}
 	}
 
+	for _, valFn := range s.validateFuncs {
+		if err := valFn(obj.(T)); err != nil {
+			return err
+		}
+	}
+
 	return nil
 }
 
-func (s *BuzzSchema) Type() reflect.Type {
+func (s *BuzzSchema[T]) Type() reflect.Type {
 	return s.refType
 }
 
-func (s *BuzzSchema) Name() string {
+func (s *BuzzSchema[T]) Name() string {
 	return s.name
 }
 
-func (s *BuzzSchema) Extend(refObj any, fields ...BuzzField) *BuzzSchema {
+func (s *BuzzSchema[T]) Extend(refObj any, fields ...BuzzField) *BuzzSchema[any] {
 	newFields := append(fields, s.fields...)
 	return Schema(refObj, newFields...)
 }
 
-func (s *BuzzSchema) Pick(refObj any, fieldNames ...string) *BuzzSchema {
+func (s *BuzzSchema[T]) Pick(refObj any, fieldNames ...string) *BuzzSchema[any] {
 	var newFields []BuzzField
 	for _, name := range fieldNames {
 		for _, field := range s.fields {
@@ -95,7 +104,7 @@ func (s *BuzzSchema) Pick(refObj any, fieldNames ...string) *BuzzSchema {
 	return Schema(refObj, newFields...)
 }
 
-func (s *BuzzSchema) Omit(refObj any, fieldNames ...string) *BuzzSchema {
+func (s *BuzzSchema[T]) Omit(refObj any, fieldNames ...string) *BuzzSchema[any] {
 	var newFields []BuzzField
 	for _, field := range s.fields {
 		fieldName := field.Name()
@@ -116,14 +125,23 @@ func (s *BuzzSchema) Omit(refObj any, fieldNames ...string) *BuzzSchema {
 	return Schema(refObj, newFields...)
 }
 
-func (s *BuzzSchema) Fields() []BuzzField {
+func (s *BuzzSchema[T]) Fields() []BuzzField {
 	return s.fields
 }
 
-func (s *BuzzSchema) WithName(name string) *BuzzSchema {
-	return &BuzzSchema{
+func (s *BuzzSchema[T]) WithName(name string) *BuzzSchema[T] {
+	return &BuzzSchema[T]{
 		name:    name,
 		fields:  s.fields,
 		refType: s.refType,
 	}
+}
+
+func (s *BuzzSchema[T]) Custom(fn func(T) error) *BuzzSchema[T] {
+	s.addValidateFunc(fn)
+	return s
+}
+
+func (s *BuzzSchema[T]) addValidateFunc(fn BuzzSchemaValidateFunc[T]) {
+	s.validateFuncs = append(s.validateFuncs, fn)
 }

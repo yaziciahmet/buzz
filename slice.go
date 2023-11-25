@@ -79,6 +79,11 @@ func (s *BuzzSlice[T]) ForEach(fn BuzzSliceElementValidateFunc[T]) *BuzzSlice[T]
 	return s
 }
 
+func (s *BuzzSlice[T]) Custom(fn BuzzSliceValidateFunc[T]) *BuzzSlice[T] {
+	s.addValidateFunc(fn)
+	return s
+}
+
 func (s *BuzzSlice[T]) addValidateFunc(fn BuzzSliceValidateFunc[T]) {
 	s.validateFuncs = append(s.validateFuncs, fn)
 }

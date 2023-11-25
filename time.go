@@ -77,6 +77,11 @@ func (t *BuzzTimestamp) NotBefore(timestamp time.Time) *BuzzTimestamp {
 	return t
 }
 
+func (t *BuzzTimestamp) Custom(fn BuzzTimestampValidateFunc) *BuzzTimestamp {
+	t.addValidateFunc(fn)
+	return t
+}
+
 func (t *BuzzTimestamp) addValidateFunc(fn BuzzTimestampValidateFunc) {
 	t.validateFuncs = append(t.validateFuncs, fn)
 }
