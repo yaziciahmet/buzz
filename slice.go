@@ -35,12 +35,12 @@ func (s *BuzzSlice[T]) Validate(v any) error {
 			return nil
 		}
 
-		return makeValidationError("", "nonnil", "slice not nullable")
+		return MakeFieldError("", "nonnil", "slice not nullable")
 	}
 
 	vTSlice, ok := v.([]T)
 	if !ok {
-		return makeValidationError("", "type", "type not []T")
+		return MakeFieldError("", "type", "type not []T")
 	}
 
 	for _, valFn := range s.validateFuncs {
@@ -68,7 +68,7 @@ func (s *BuzzSlice[T]) Clone() BuzzField {
 func (s *BuzzSlice[T]) Min(min int) *BuzzSlice[T] {
 	s.addValidateFunc(func(v []T) error {
 		if min > len(v) {
-			return makeValidationError("", "min", "min failed")
+			return MakeFieldError("", "min", "min failed")
 		}
 		return nil
 	})
@@ -78,7 +78,7 @@ func (s *BuzzSlice[T]) Min(min int) *BuzzSlice[T] {
 func (s *BuzzSlice[T]) Max(max int) *BuzzSlice[T] {
 	s.addValidateFunc(func(v []T) error {
 		if max < len(v) {
-			return makeValidationError("", "max", "max failed")
+			return MakeFieldError("", "max", "max failed")
 		}
 		return nil
 	})
@@ -88,7 +88,7 @@ func (s *BuzzSlice[T]) Max(max int) *BuzzSlice[T] {
 func (s *BuzzSlice[T]) Len(l int) *BuzzSlice[T] {
 	s.addValidateFunc(func(v []T) error {
 		if l != len(v) {
-			return makeValidationError("", "len", "len failed")
+			return MakeFieldError("", "len", "len failed")
 		}
 		return nil
 	})
@@ -98,7 +98,7 @@ func (s *BuzzSlice[T]) Len(l int) *BuzzSlice[T] {
 func (s *BuzzSlice[T]) Nonempty() *BuzzSlice[T] {
 	s.addValidateFunc(func(v []T) error {
 		if len(v) == 0 {
-			return makeValidationError("", "nonempty", "nonempty failed")
+			return MakeFieldError("", "nonempty", "nonempty failed")
 		}
 		return nil
 	})

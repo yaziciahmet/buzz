@@ -32,12 +32,12 @@ func (m *BuzzMap[K, V]) Validate(v any) error {
 			return nil
 		}
 
-		return makeValidationError("", "nonnil", "map not nullable")
+		return MakeFieldError("", "nonnil", "map not nullable")
 	}
 
 	vMap, ok := v.(map[K]V)
 	if !ok {
-		return makeValidationError("", "type", "invalid map type")
+		return MakeFieldError("", "type", "invalid map type")
 	}
 
 	for _, valFn := range m.validateFuncs {
@@ -71,7 +71,7 @@ func (m *BuzzMap[K, V]) Nonnil() *BuzzMap[K, V] {
 func (m *BuzzMap[K, V]) Nonempty() *BuzzMap[K, V] {
 	m.addValidateFunc(func(v map[K]V) error {
 		if len(v) == 0 {
-			return makeValidationError("", "nonnil", "nonnil failed")
+			return MakeFieldError("", "nonnil", "nonnil failed")
 		}
 		return nil
 	})
@@ -81,7 +81,7 @@ func (m *BuzzMap[K, V]) Nonempty() *BuzzMap[K, V] {
 func (m *BuzzMap[K, V]) ContainsKey(key K) *BuzzMap[K, V] {
 	m.addValidateFunc(func(v map[K]V) error {
 		if _, ok := v[key]; !ok {
-			return makeValidationError("", "containskey", "containskey failed")
+			return MakeFieldError("", "containskey", "containskey failed")
 		}
 		return nil
 	})

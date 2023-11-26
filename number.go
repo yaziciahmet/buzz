@@ -33,7 +33,7 @@ func (n *BuzzNumber[T]) Type() reflect.Type {
 func (n *BuzzNumber[T]) Validate(v any) error {
 	vint, ok := v.(T)
 	if !ok {
-		return makeValidationError("", "type", "type not T")
+		return MakeFieldError("", "type", "type not T")
 	}
 
 	for _, valFn := range n.validateFuncs {
@@ -60,7 +60,7 @@ func (n *BuzzNumber[T]) Clone() BuzzField {
 func (n *BuzzNumber[T]) Min(min T) *BuzzNumber[T] {
 	n.addValidateFunc(func(v T) error {
 		if min > v {
-			return makeValidationError("", "min", "min failed")
+			return MakeFieldError("", "min", "min failed")
 		}
 		return nil
 	})
@@ -70,7 +70,7 @@ func (n *BuzzNumber[T]) Min(min T) *BuzzNumber[T] {
 func (n *BuzzNumber[T]) Max(max T) *BuzzNumber[T] {
 	n.addValidateFunc(func(v T) error {
 		if max < v {
-			return makeValidationError("", "max", "max failed")
+			return MakeFieldError("", "max", "max failed")
 		}
 		return nil
 	})
@@ -80,7 +80,7 @@ func (n *BuzzNumber[T]) Max(max T) *BuzzNumber[T] {
 func (n *BuzzNumber[T]) Positive() *BuzzNumber[T] {
 	n.addValidateFunc(func(v T) error {
 		if v <= 0 {
-			return makeValidationError("", "positive", "positive failed")
+			return MakeFieldError("", "positive", "positive failed")
 		}
 		return nil
 	})
@@ -90,7 +90,7 @@ func (n *BuzzNumber[T]) Positive() *BuzzNumber[T] {
 func (n *BuzzNumber[T]) Nonnegative() *BuzzNumber[T] {
 	n.addValidateFunc(func(v T) error {
 		if v < 0 {
-			return makeValidationError("", "nonnegative", "nonnegative failed")
+			return MakeFieldError("", "nonnegative", "nonnegative failed")
 		}
 		return nil
 	})
@@ -100,7 +100,7 @@ func (n *BuzzNumber[T]) Nonnegative() *BuzzNumber[T] {
 func (n *BuzzNumber[T]) Negative() *BuzzNumber[T] {
 	n.addValidateFunc(func(v T) error {
 		if v >= 0 {
-			return makeValidationError("", "negative", "negative failed")
+			return MakeFieldError("", "negative", "negative failed")
 		}
 		return nil
 	})
@@ -110,7 +110,7 @@ func (n *BuzzNumber[T]) Negative() *BuzzNumber[T] {
 func (n *BuzzNumber[T]) NonPositive() *BuzzNumber[T] {
 	n.addValidateFunc(func(v T) error {
 		if v > 0 {
-			return makeValidationError("", "nonpositive", "nonpositive failed")
+			return MakeFieldError("", "nonpositive", "nonpositive failed")
 		}
 		return nil
 	})

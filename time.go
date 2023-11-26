@@ -36,7 +36,7 @@ func (t *BuzzTime) WithName(name string) BuzzField {
 func (t *BuzzTime) Validate(v any) error {
 	vtime, ok := v.(time.Time)
 	if !ok {
-		return makeValidationError("", "type", "type not string")
+		return MakeFieldError("", "type", "type not string")
 	}
 
 	for _, valFn := range t.validateFuncs {
@@ -59,7 +59,7 @@ func (t *BuzzTime) After(timestamp time.Time) *BuzzTime {
 		if v.After(timestamp) {
 			return nil
 		}
-		return makeValidationError("", "after", "after failed")
+		return MakeFieldError("", "after", "after failed")
 	})
 	return t
 }
@@ -69,7 +69,7 @@ func (t *BuzzTime) Before(timestamp time.Time) *BuzzTime {
 		if v.Before(timestamp) {
 			return nil
 		}
-		return makeValidationError("", "before", "before failed")
+		return MakeFieldError("", "before", "before failed")
 	})
 	return t
 }
@@ -77,7 +77,7 @@ func (t *BuzzTime) Before(timestamp time.Time) *BuzzTime {
 func (t *BuzzTime) NotAfter(timestamp time.Time) *BuzzTime {
 	t.addValidateFunc(func(v time.Time) error {
 		if v.After(timestamp) {
-			return makeValidationError("", "notAfter", "notAfter failed")
+			return MakeFieldError("", "notAfter", "notAfter failed")
 		}
 		return nil
 	})
@@ -87,7 +87,7 @@ func (t *BuzzTime) NotAfter(timestamp time.Time) *BuzzTime {
 func (t *BuzzTime) NotBefore(timestamp time.Time) *BuzzTime {
 	t.addValidateFunc(func(v time.Time) error {
 		if v.Before(timestamp) {
-			return makeValidationError("", "notBefore", "notBefore failed")
+			return MakeFieldError("", "notBefore", "notBefore failed")
 		}
 		return nil
 	})

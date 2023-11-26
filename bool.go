@@ -28,7 +28,7 @@ func (b *BuzzBool) Type() reflect.Type {
 func (b *BuzzBool) Validate(v any) error {
 	vBool, ok := v.(bool)
 	if !ok {
-		return makeValidationError("", "type", "expected bool type")
+		return MakeFieldError("", "type", "expected bool type")
 	}
 
 	for _, valFn := range b.validateFuncs {
@@ -57,7 +57,7 @@ func (b *BuzzBool) True() *BuzzBool {
 		if v {
 			return nil
 		}
-		return makeValidationError("", "true", "expected true")
+		return MakeFieldError("", "true", "expected true")
 	})
 	return b
 }
@@ -67,7 +67,7 @@ func (b *BuzzBool) False() *BuzzBool {
 		if !v {
 			return nil
 		}
-		return makeValidationError("", "false", "expected false")
+		return MakeFieldError("", "false", "expected false")
 	})
 	return b
 }

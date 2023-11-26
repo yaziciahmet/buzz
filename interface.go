@@ -39,12 +39,12 @@ func (i *BuzzInterface[T]) Validate(v any) error {
 			return nil
 		}
 
-		return makeValidationError("", "nonnil", "interface not nullable")
+		return MakeFieldError("", "nonnil", "interface not nullable")
 	}
 
 	viface, ok := v.(T)
 	if !ok {
-		return makeValidationError("", "type", "interface type not T")
+		return MakeFieldError("", "type", "interface type not T")
 	}
 
 	for _, valFn := range i.validateFuncs {
@@ -79,7 +79,7 @@ func (i *BuzzInterface[T]) MustBeType(typ T) *BuzzInterface[T] {
 	i.addValidateFunc(func(v T) error {
 		actualType := reflect.TypeOf(v)
 		if expectedType != actualType {
-			return makeValidationError("", "mustbetype", "mustbetype failed")
+			return MakeFieldError("", "mustbetype", "mustbetype failed")
 		}
 
 		return nil

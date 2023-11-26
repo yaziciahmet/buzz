@@ -36,11 +36,11 @@ func (p *BuzzPtr) Validate(v any) error {
 			return nil
 		}
 
-		return makeValidationError("", "nonnil", "pointer is not nullable")
+		return MakeFieldError("", "nonnil", "pointer is not nullable")
 	}
 
 	if refKind != reflect.Pointer {
-		return makeValidationError("", "type", "type must be pointer")
+		return MakeFieldError("", "type", "type must be pointer")
 	}
 
 	if refValue.IsNil() {
@@ -48,7 +48,7 @@ func (p *BuzzPtr) Validate(v any) error {
 			return nil
 		}
 
-		return makeValidationError("", "nonnil", "pointer is not nullable")
+		return MakeFieldError("", "nonnil", "pointer is not nullable")
 	}
 
 	return p.field.Validate(refValue.Elem().Interface())
