@@ -9,30 +9,30 @@ var (
 	timeReflectType = reflect.TypeOf(time.Time{})
 )
 
-type BuzzTimestampValidateFunc func(t time.Time) error
+type BuzzTimeValidateFunc func(t time.Time) error
 
-type BuzzTimestamp struct {
+type BuzzTime struct {
 	name          string
-	validateFuncs []BuzzTimestampValidateFunc
+	validateFuncs []BuzzTimeValidateFunc
 }
 
-func Timestamp() *BuzzTimestamp {
-	return &BuzzTimestamp{}
+func Time() *BuzzTime {
+	return &BuzzTime{}
 }
 
-func (t *BuzzTimestamp) Name() string {
+func (t *BuzzTime) Name() string {
 	return t.name
 }
 
-func (t *BuzzTimestamp) SetName(name string) {
+func (t *BuzzTime) SetName(name string) {
 	t.name = name
 }
 
-func (t *BuzzTimestamp) Type() reflect.Type {
+func (t *BuzzTime) Type() reflect.Type {
 	return timeReflectType
 }
 
-func (t *BuzzTimestamp) Validate(v any) error {
+func (t *BuzzTime) Validate(v any) error {
 	for _, valFn := range t.validateFuncs {
 		vtime, ok := v.(time.Time)
 		if !ok {
@@ -46,7 +46,7 @@ func (t *BuzzTimestamp) Validate(v any) error {
 	return nil
 }
 
-func (t *BuzzTimestamp) After(timestamp time.Time) *BuzzTimestamp {
+func (t *BuzzTime) After(timestamp time.Time) *BuzzTime {
 	t.addValidateFunc(func(v time.Time) error {
 		if v.After(timestamp) {
 			return nil
@@ -56,7 +56,7 @@ func (t *BuzzTimestamp) After(timestamp time.Time) *BuzzTimestamp {
 	return t
 }
 
-func (t *BuzzTimestamp) Before(timestamp time.Time) *BuzzTimestamp {
+func (t *BuzzTime) Before(timestamp time.Time) *BuzzTime {
 	t.addValidateFunc(func(v time.Time) error {
 		if v.Before(timestamp) {
 			return nil
@@ -66,7 +66,7 @@ func (t *BuzzTimestamp) Before(timestamp time.Time) *BuzzTimestamp {
 	return t
 }
 
-func (t *BuzzTimestamp) NotAfter(timestamp time.Time) *BuzzTimestamp {
+func (t *BuzzTime) NotAfter(timestamp time.Time) *BuzzTime {
 	t.addValidateFunc(func(v time.Time) error {
 		if v.After(timestamp) {
 			return makeValidationError("", "notAfter", "notAfter failed")
@@ -76,7 +76,7 @@ func (t *BuzzTimestamp) NotAfter(timestamp time.Time) *BuzzTimestamp {
 	return t
 }
 
-func (t *BuzzTimestamp) NotBefore(timestamp time.Time) *BuzzTimestamp {
+func (t *BuzzTime) NotBefore(timestamp time.Time) *BuzzTime {
 	t.addValidateFunc(func(v time.Time) error {
 		if v.Before(timestamp) {
 			return makeValidationError("", "notBefore", "notBefore failed")
@@ -86,11 +86,11 @@ func (t *BuzzTimestamp) NotBefore(timestamp time.Time) *BuzzTimestamp {
 	return t
 }
 
-func (t *BuzzTimestamp) Custom(fn BuzzTimestampValidateFunc) *BuzzTimestamp {
+func (t *BuzzTime) Custom(fn BuzzTimeValidateFunc) *BuzzTime {
 	t.addValidateFunc(fn)
 	return t
 }
 
-func (t *BuzzTimestamp) addValidateFunc(fn BuzzTimestampValidateFunc) {
+func (t *BuzzTime) addValidateFunc(fn BuzzTimeValidateFunc) {
 	t.validateFuncs = append(t.validateFuncs, fn)
 }
