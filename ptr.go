@@ -62,9 +62,9 @@ func (p *BuzzPtr) WithName(name string) BuzzField {
 func (p *BuzzPtr) Clone() BuzzField {
 	return &BuzzPtr{
 		name:     p.name,
-		nullable: p.nullable,
 		field:    p.field,
 		refType:  p.refType,
+		nullable: p.nullable,
 	}
 }
 

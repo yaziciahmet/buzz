@@ -70,6 +70,9 @@ func Benchmark_ComplexStruct(b *testing.B) {
 			return nil
 		})),
 		Field("FriendsWithPtrUsers", Slice[*User]().Min(1)),
+		Field("TheInterface", Interface[MyInterface]().Nonnil().MustBeType(&MyInterfaceStruct{})),
+		Field("CrucialError", Error()),
+		Field("KeyValue", Map[string, int]().ContainsKey("potato")),
 		Field("Admin", Bool().True()),
 		Field("CreatedAt", Time().After(now.Add(-1))),
 		Field("UpdatedAt", Ptr(Time()).Nonnil()),
@@ -99,6 +102,11 @@ func Benchmark_ComplexStruct(b *testing.B) {
 		FriendsWithPtrUsers: []*User{{
 			Id: 22,
 		}},
+		TheInterface: &MyInterfaceStruct{},
+		CrucialError: nil,
+		KeyValue: map[string]int{
+			"potato": 123,
+		},
 		Admin:        true,
 		CreatedAt:    now,
 		UpdatedAt:    &now,
@@ -133,6 +141,9 @@ func Benchmark_ComplexStructParallel(b *testing.B) {
 			return nil
 		})),
 		Field("FriendsWithPtrUsers", Slice[*User]().Min(1)),
+		Field("TheInterface", Interface[MyInterface]().Nonnil().MustBeType(&MyInterfaceStruct{})),
+		Field("CrucialError", Error()),
+		Field("KeyValue", Map[string, int]().ContainsKey("potato")),
 		Field("Admin", Bool().True()),
 		Field("CreatedAt", Time().After(now.Add(-1))),
 		Field("UpdatedAt", Ptr(Time()).Nonnil()),
@@ -162,6 +173,11 @@ func Benchmark_ComplexStructParallel(b *testing.B) {
 		FriendsWithPtrUsers: []*User{{
 			Id: 22,
 		}},
+		TheInterface: &MyInterfaceStruct{},
+		CrucialError: nil,
+		KeyValue: map[string]int{
+			"potato": 123,
+		},
 		Admin:        true,
 		CreatedAt:    now,
 		UpdatedAt:    &now,

@@ -62,6 +62,9 @@ type ComplexStruct struct {
 	Comments            []string
 	Friends             []User
 	FriendsWithPtrUsers []*User
+	TheInterface        MyInterface
+	CrucialError        error
+	KeyValue            map[string]int
 	Admin               bool
 	CreatedAt           time.Time
 	UpdatedAt           *time.Time

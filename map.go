@@ -59,6 +59,7 @@ func (m *BuzzMap[K, V]) Clone() BuzzField {
 		name:          m.name,
 		validateFuncs: m.validateFuncs,
 		refType:       m.refType,
+		nullable:      m.nullable,
 	}
 }
 

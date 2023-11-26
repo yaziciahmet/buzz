@@ -61,6 +61,7 @@ func (s *BuzzSlice[T]) Clone() BuzzField {
 		name:          s.name,
 		validateFuncs: s.validateFuncs,
 		refType:       s.refType,
+		nullable:      s.nullable,
 	}
 }
 

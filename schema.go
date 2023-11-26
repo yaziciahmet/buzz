@@ -36,7 +36,6 @@ func Schema[T any](refObj T, fields ...BuzzField) *BuzzSchema[T] {
 		for _, refField := range refFields {
 			if refField.Name == fieldName {
 				if refField.Type != fieldType {
-					fmt.Println(refField.Type, fieldType)
 					panic(fmt.Sprintf("buzz: field '%s' has mismatching types", fieldName))
 				}
 

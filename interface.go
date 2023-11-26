@@ -65,6 +65,7 @@ func (i *BuzzInterface[T]) Clone() BuzzField {
 		name:          i.name,
 		validateFuncs: i.validateFuncs,
 		refType:       i.refType,
+		nullable:      i.nullable,
 	}
 }
 
