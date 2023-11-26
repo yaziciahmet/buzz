@@ -145,6 +145,31 @@ func (s *BuzzString) EndsWith(str string) *BuzzString {
 	return s
 }
 
+func (s *BuzzString) UUID() *BuzzString {
+	s.addValidateFunc(func(v string) error {
+		if len(v) != 36 {
+			return makeValidationError("", "uuid", "invalid uuid length")
+		}
+
+		if v[8] != '-' || v[13] != '-' || v[18] != '-' || v[23] != '-' {
+			return makeValidationError("", "uuid", "invalid uuid format")
+		}
+
+		for _, r := range v {
+			if r == '-' {
+				continue
+			}
+
+			if !s.isHexB(byte(r)) {
+				return makeValidationError("", "uuid", "invalid uuid format")
+			}
+		}
+
+		return nil
+	})
+	return s
+}
+
 func (s *BuzzString) Custom(fn BuzzStringValidateFunc) *BuzzString {
 	s.addValidateFunc(fn)
 	return s
@@ -152,4 +177,8 @@ func (s *BuzzString) Custom(fn BuzzStringValidateFunc) *BuzzString {
 
 func (s *BuzzString) addValidateFunc(fn BuzzStringValidateFunc) {
 	s.validateFuncs = append(s.validateFuncs, fn)
+}
+
+func (s *BuzzString) isHexB(b byte) bool {
+	return (b >= 48 && b <= 57) || (b >= 65 && b <= 70) || (b >= 97 && b <= 102)
 }
