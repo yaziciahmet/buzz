@@ -42,3 +42,8 @@ type StructWithSlice struct {
 	List  []string
 	List2 []int
 }
+
+type StructWithPointer struct {
+	Id   int
+	Name *string
+}
