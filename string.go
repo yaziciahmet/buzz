@@ -15,25 +15,20 @@ var (
 type BuzzStringValidateFunc func(string) error
 
 type BuzzString struct {
-	name          string
 	validateFuncs []BuzzStringValidateFunc
 }
 
-func String(name string) *BuzzString {
-	return &BuzzString{name: name}
-}
-
-func (s *BuzzString) Name() string {
-	return s.name
+func String() *BuzzString {
+	return &BuzzString{}
 }
 
 func (s *BuzzString) Type() reflect.Type {
 	return stringReflectType
 }
 
-func (s *BuzzString) Validate(v any) error {
+func (s *BuzzString) Validate(v string) error {
 	for _, valFn := range s.validateFuncs {
-		if err := valFn(v.(string)); err != nil {
+		if err := valFn(v); err != nil {
 			return err
 		}
 	}
@@ -43,7 +38,7 @@ func (s *BuzzString) Validate(v any) error {
 func (s *BuzzString) Min(min int) *BuzzString {
 	s.addValidateFunc(func(v string) error {
 		if min > len(v) {
-			return makeValidationError(s.name, "min", "min failed")
+			return makeValidationError("", "min", "min failed")
 		}
 		return nil
 	})
@@ -53,7 +48,7 @@ func (s *BuzzString) Min(min int) *BuzzString {
 func (s *BuzzString) Max(max int) *BuzzString {
 	s.addValidateFunc(func(v string) error {
 		if max < len(v) {
-			return makeValidationError(s.name, "max", "max failed")
+			return makeValidationError("", "max", "max failed")
 		}
 		return nil
 	})
@@ -63,7 +58,7 @@ func (s *BuzzString) Max(max int) *BuzzString {
 func (s *BuzzString) Len(l int) *BuzzString {
 	s.addValidateFunc(func(v string) error {
 		if l != len(v) {
-			return makeValidationError(s.name, "len", "len failed")
+			return makeValidationError("", "len", "len failed")
 		}
 		return nil
 	})
@@ -73,7 +68,7 @@ func (s *BuzzString) Len(l int) *BuzzString {
 func (s *BuzzString) Email() *BuzzString {
 	s.addValidateFunc(func(v string) error {
 		if _, err := mail.ParseAddress(v); err != nil {
-			return makeValidationError(s.name, "email", "email failed")
+			return makeValidationError("", "email", "email failed")
 		}
 		return nil
 	})
@@ -83,7 +78,7 @@ func (s *BuzzString) Email() *BuzzString {
 func (s *BuzzString) URL() *BuzzString {
 	s.addValidateFunc(func(v string) error {
 		if _, err := url.ParseRequestURI(v); err != nil {
-			return makeValidationError(s.name, "url", "url failed")
+			return makeValidationError("", "url", "url failed")
 		}
 		return nil
 	})
@@ -98,7 +93,7 @@ func (s *BuzzString) Regex(regex string) *BuzzString {
 		}
 
 		if !r.MatchString(v) {
-			return makeValidationError(s.name, "regex", "regex failed")
+			return makeValidationError("", "regex", "regex failed")
 		}
 
 		return nil
@@ -109,7 +104,7 @@ func (s *BuzzString) Regex(regex string) *BuzzString {
 func (s *BuzzString) Contains(str string) *BuzzString {
 	s.addValidateFunc(func(v string) error {
 		if !strings.Contains(v, str) {
-			return makeValidationError(s.name, "contains", "contains failed")
+			return makeValidationError("", "contains", "contains failed")
 		}
 		return nil
 	})
@@ -119,7 +114,7 @@ func (s *BuzzString) Contains(str string) *BuzzString {
 func (s *BuzzString) StartsWith(str string) *BuzzString {
 	s.addValidateFunc(func(v string) error {
 		if !strings.HasPrefix(v, str) {
-			return makeValidationError(s.name, "startsWith", "startsWith failed")
+			return makeValidationError("", "startsWith", "startsWith failed")
 		}
 		return nil
 	})
@@ -129,7 +124,7 @@ func (s *BuzzString) StartsWith(str string) *BuzzString {
 func (s *BuzzString) EndsWith(str string) *BuzzString {
 	s.addValidateFunc(func(v string) error {
 		if !strings.HasSuffix(v, str) {
-			return makeValidationError(s.name, "endsWith", "endsWith failed")
+			return makeValidationError("", "endsWith", "endsWith failed")
 		}
 		return nil
 	})

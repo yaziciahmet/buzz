@@ -12,25 +12,20 @@ type BuzzSliceValidateFunc[T any] func(v []T) error
 type BuzzSliceElementValidateFunc[T any] func(v T) error
 
 type BuzzSlice[T any] struct {
-	name          string
 	validateFuncs []BuzzSliceValidateFunc[T]
 }
 
-func Slice[T any](name string) *BuzzSlice[T] {
-	return &BuzzSlice[T]{name: name}
-}
-
-func (s *BuzzSlice[T]) Name() string {
-	return s.name
+func Slice[T any]() *BuzzSlice[T] {
+	return &BuzzSlice[T]{}
 }
 
 func (s *BuzzSlice[T]) Type() reflect.Type {
 	return stringReflectType
 }
 
-func (s *BuzzSlice[T]) Validate(v any) error {
+func (s *BuzzSlice[T]) Validate(v []T) error {
 	for _, valFn := range s.validateFuncs {
-		if err := valFn(v.([]T)); err != nil {
+		if err := valFn(v); err != nil {
 			return err
 		}
 	}
@@ -40,7 +35,7 @@ func (s *BuzzSlice[T]) Validate(v any) error {
 func (s *BuzzSlice[T]) Min(min int) *BuzzSlice[T] {
 	s.addValidateFunc(func(v []T) error {
 		if min > len(v) {
-			return makeValidationError(s.name, "min", "min failed")
+			return makeValidationError("", "min", "min failed")
 		}
 		return nil
 	})
@@ -50,7 +45,7 @@ func (s *BuzzSlice[T]) Min(min int) *BuzzSlice[T] {
 func (s *BuzzSlice[T]) Max(max int) *BuzzSlice[T] {
 	s.addValidateFunc(func(v []T) error {
 		if max < len(v) {
-			return makeValidationError(s.name, "max", "max failed")
+			return makeValidationError("", "max", "max failed")
 		}
 		return nil
 	})
@@ -60,7 +55,7 @@ func (s *BuzzSlice[T]) Max(max int) *BuzzSlice[T] {
 func (s *BuzzSlice[T]) Len(l int) *BuzzSlice[T] {
 	s.addValidateFunc(func(v []T) error {
 		if l != len(v) {
-			return makeValidationError(s.name, "len", "len failed")
+			return makeValidationError("", "len", "len failed")
 		}
 		return nil
 	})
@@ -70,7 +65,7 @@ func (s *BuzzSlice[T]) Len(l int) *BuzzSlice[T] {
 func (s *BuzzSlice[T]) Nonempty() *BuzzSlice[T] {
 	s.addValidateFunc(func(v []T) error {
 		if len(v) > 0 {
-			return makeValidationError(s.name, "nonempty", "nonempty failed")
+			return makeValidationError("", "nonempty", "nonempty failed")
 		}
 		return nil
 	})
@@ -80,7 +75,7 @@ func (s *BuzzSlice[T]) Nonempty() *BuzzSlice[T] {
 func (s *BuzzSlice[T]) Nonnil() *BuzzSlice[T] {
 	s.addValidateFunc(func(v []T) error {
 		if v == nil {
-			return makeValidationError(s.name, "nonnil", "nonnil failed")
+			return makeValidationError("", "nonnil", "nonnil failed")
 		}
 		return nil
 	})

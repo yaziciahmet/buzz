@@ -9,25 +9,20 @@ var (
 type BuzzIntValidateFunc func(v int) error
 
 type BuzzInt struct {
-	name          string
 	validateFuncs []BuzzIntValidateFunc
 }
 
-func Int(name string) *BuzzInt {
-	return &BuzzInt{name: name}
-}
-
-func (i *BuzzInt) Name() string {
-	return i.name
+func Int() *BuzzInt {
+	return &BuzzInt{}
 }
 
 func (i *BuzzInt) Type() reflect.Type {
 	return intReflectType
 }
 
-func (i *BuzzInt) Validate(v any) error {
+func (i *BuzzInt) Validate(v int) error {
 	for _, valFn := range i.validateFuncs {
-		if err := valFn(v.(int)); err != nil {
+		if err := valFn(v); err != nil {
 			return err
 		}
 	}
@@ -37,7 +32,7 @@ func (i *BuzzInt) Validate(v any) error {
 func (i *BuzzInt) Min(min int) *BuzzInt {
 	i.addValidateFunc(func(v int) error {
 		if min > v {
-			return makeValidationError(i.name, "min", "min failed")
+			return makeValidationError("", "min", "min failed")
 		}
 		return nil
 	})
@@ -47,7 +42,7 @@ func (i *BuzzInt) Min(min int) *BuzzInt {
 func (i *BuzzInt) Max(max int) *BuzzInt {
 	i.addValidateFunc(func(v int) error {
 		if max < v {
-			return makeValidationError(i.name, "max", "max failed")
+			return makeValidationError("", "max", "max failed")
 		}
 		return nil
 	})
@@ -57,7 +52,7 @@ func (i *BuzzInt) Max(max int) *BuzzInt {
 func (i *BuzzInt) Positive() *BuzzInt {
 	i.addValidateFunc(func(v int) error {
 		if v <= 0 {
-			return makeValidationError(i.name, "positive", "positive failed")
+			return makeValidationError("", "positive", "positive failed")
 		}
 		return nil
 	})
@@ -67,7 +62,7 @@ func (i *BuzzInt) Positive() *BuzzInt {
 func (i *BuzzInt) Nonnegative() *BuzzInt {
 	i.addValidateFunc(func(v int) error {
 		if v < 0 {
-			return makeValidationError(i.name, "nonnegative", "nonnegative failed")
+			return makeValidationError("", "nonnegative", "nonnegative failed")
 		}
 		return nil
 	})
@@ -77,7 +72,7 @@ func (i *BuzzInt) Nonnegative() *BuzzInt {
 func (i *BuzzInt) Negative() *BuzzInt {
 	i.addValidateFunc(func(v int) error {
 		if v >= 0 {
-			return makeValidationError(i.name, "negative", "negative failed")
+			return makeValidationError("", "negative", "negative failed")
 		}
 		return nil
 	})
@@ -87,7 +82,7 @@ func (i *BuzzInt) Negative() *BuzzInt {
 func (i *BuzzInt) NonPositive() *BuzzInt {
 	i.addValidateFunc(func(v int) error {
 		if v > 0 {
-			return makeValidationError(i.name, "nonpositive", "nonpositive failed")
+			return makeValidationError("", "nonpositive", "nonpositive failed")
 		}
 		return nil
 	})

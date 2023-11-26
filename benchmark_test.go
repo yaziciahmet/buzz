@@ -5,9 +5,9 @@ import "testing"
 func Benchmark_SimpleStruct(b *testing.B) {
 	schema := Schema(
 		User{},
-		Int("Id").Min(0).Max(1000),
-		String("Name").Min(2).Max(20),
-		String("Email").Email(),
+		Field("Id", Int().Min(0).Max(1000)),
+		Field("Name", String().Min(2).Max(20)),
+		Field("Email", String().Email()),
 	)
 
 	user := User{

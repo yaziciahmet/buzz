@@ -8,9 +8,9 @@ import (
 func Test_SchemaBasicStructSuccess(t *testing.T) {
 	if err := Schema(
 		User{},
-		Int("Id").Min(0).Max(1000),
-		String("Name").Min(2).Max(20),
-		String("Email").Email(),
+		Field("Id", Int().Min(0).Max(1000)),
+		Field("Name", String().Min(2).Max(20)),
+		Field("Email", String().Email()),
 	).Validate(User{
 		Id:    100,
 		Name:  "ah",
@@ -23,13 +23,13 @@ func Test_SchemaBasicStructSuccess(t *testing.T) {
 func Test_SchemaNestedStructSuccess(t *testing.T) {
 	if err := Schema(
 		UserWithAddress{},
-		Int("Id").Min(0).Max(1000),
-		String("Name").Min(2).Max(20),
-		Schema(
+		Field("Id", Int().Min(0).Max(1000)),
+		Field("Name", String().Min(2).Max(20)),
+		Field("Address", Schema[any](
 			Address{},
-			Int("ZipCode").Min(0).Max(100000),
-			String("Text").Min(5).Max(100),
-		).WithName("Address"),
+			Field("ZipCode", Int().Min(0).Max(100000)),
+			Field("Text", String().Min(5).Max(100)),
+		)),
 	).Validate(UserWithAddress{
 		Id:   1000,
 		Name: "ah",
@@ -46,12 +46,12 @@ func Test_SchemaExtendSuccess(t *testing.T) {
 	if err := Extend(
 		Schema(
 			User{},
-			Int("Id").Min(0).Max(1000),
-			String("Name").Min(2).Max(20),
-			String("Email").Email(),
+			Field("Id", Int().Min(0).Max(1000)),
+			Field("Name", String().Min(2).Max(20)),
+			Field("Email", String().Email()),
 		),
 		UserExtended{},
-		String("String").Min(5),
+		Field("String", String().Min(5)),
 	).Validate(UserExtended{
 		Id:     1000,
 		Name:   "ragnarok",
@@ -66,12 +66,12 @@ func Test_SchemaExtendFail(t *testing.T) {
 	if err := Extend(
 		Schema(
 			User{},
-			Int("Id").Min(0).Max(1000),
-			String("Name").Min(2).Max(20),
-			String("Email").Email(),
+			Field("Id", Int().Min(0).Max(1000)),
+			Field("Name", String().Min(2).Max(20)),
+			Field("Email", String().Email()),
 		),
 		UserExtended{},
-		String("String").Min(5),
+		Field("String", String().Min(5)),
 	).Validate(UserExtended{
 		Id:     10000,
 		Name:   "ragnarok",
@@ -86,9 +86,9 @@ func Test_SchemaPickSuccess(t *testing.T) {
 	if err := Pick(
 		Schema(
 			User{},
-			Int("Id").Min(0).Max(1000),
-			String("Name").Min(2).Max(20),
-			String("Email").Email(),
+			Field("Id", Int().Min(0).Max(1000)),
+			Field("Name", String().Min(2).Max(20)),
+			Field("Email", String().Email()),
 		),
 		Id{},
 		"Id",
@@ -103,9 +103,9 @@ func Test_SchemaPickFail(t *testing.T) {
 	if err := Pick(
 		Schema(
 			User{},
-			Int("Id").Min(0).Max(1000),
-			String("Name").Min(2).Max(20),
-			String("Email").Email(),
+			Field("Id", Int().Min(0).Max(1000)),
+			Field("Name", String().Min(2).Max(20)),
+			Field("Email", String().Email()),
 		),
 		Id{},
 		"Id",
@@ -120,9 +120,9 @@ func Test_SchemaOmitSuccess(t *testing.T) {
 	if err := Omit(
 		Schema(
 			User{},
-			Int("Id").Min(0).Max(1000),
-			String("Name").Min(2).Max(20),
-			String("Email").Email(),
+			Field("Id", Int().Min(0).Max(1000)),
+			Field("Name", String().Min(2).Max(20)),
+			Field("Email", String().Email()),
 		),
 		Id{},
 		"Name",
@@ -138,9 +138,9 @@ func Test_SchemaOmitFail(t *testing.T) {
 	if err := Omit(
 		Schema(
 			User{},
-			Int("Id").Min(0).Max(1000),
-			String("Name").Min(2).Max(20),
-			String("Email").Email(),
+			Field("Id", Int().Min(0).Max(1000)),
+			Field("Name", String().Min(2).Max(20)),
+			Field("Email", String().Email()),
 		),
 		Id{},
 		"Name",
@@ -155,9 +155,9 @@ func Test_SchemaOmitFail(t *testing.T) {
 func Test_SchemaCustomSuccess(t *testing.T) {
 	if err := Schema(
 		User{},
-		Int("Id").Min(0).Max(1000),
-		String("Name").Min(2).Max(20),
-		String("Email").Email(),
+		Field("Id", Int().Min(0).Max(1000)),
+		Field("Name", String().Min(2).Max(20)),
+		Field("Email", String().Email()),
 	).Custom(func(u User) error {
 		if u.Email != "ahmet@mail.com" {
 			return errors.New("you shall not pass")
@@ -176,9 +176,9 @@ func Test_SchemaCustomOnPickFail(t *testing.T) {
 	if err := Pick(
 		Schema(
 			User{},
-			Int("Id").Min(0).Max(1000),
-			String("Name").Min(2).Max(20),
-			String("Email").Email(),
+			Field("Id", Int().Min(0).Max(1000)),
+			Field("Name", String().Min(2).Max(20)),
+			Field("Email", String().Email()),
 		),
 		Id{},
 		"Id",
