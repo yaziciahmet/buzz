@@ -44,6 +44,13 @@ func (b *BuzzBool) Validate(v any) error {
 	return nil
 }
 
+func (b *BuzzBool) Clone() BuzzField {
+	return &BuzzBool{
+		name:          b.name,
+		expectedValue: b.expectedValue,
+	}
+}
+
 func (b *BuzzBool) True() *BuzzBool {
 	b.expectedValue = new(bool)
 	*b.expectedValue = true

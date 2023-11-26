@@ -48,6 +48,14 @@ func (n *BuzzNumber[T]) Validate(v any) error {
 	return nil
 }
 
+func (n *BuzzNumber[T]) Clone() BuzzField {
+	return &BuzzNumber[T]{
+		name:          n.name,
+		validateFuncs: n.validateFuncs,
+		refType:       n.refType,
+	}
+}
+
 func (n *BuzzNumber[T]) Min(min T) *BuzzNumber[T] {
 	n.addValidateFunc(func(v T) error {
 		if min > v {

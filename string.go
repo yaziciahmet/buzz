@@ -49,6 +49,13 @@ func (s *BuzzString) Validate(v any) error {
 	return nil
 }
 
+func (s *BuzzString) Clone() BuzzField {
+	return &BuzzString{
+		name:          s.name,
+		validateFuncs: s.validateFuncs,
+	}
+}
+
 func (s *BuzzString) Min(min int) *BuzzString {
 	s.addValidateFunc(func(v string) error {
 		if min > len(v) {

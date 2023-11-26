@@ -92,6 +92,15 @@ func (s *BuzzSchema[T]) Type() reflect.Type {
 	return s.refType
 }
 
+func (s *BuzzSchema[T]) Clone() BuzzField {
+	return &BuzzSchema[T]{
+		name:          s.name,
+		fields:        s.fields,
+		validateFuncs: s.validateFuncs,
+		refType:       s.refType,
+	}
+}
+
 func (s *BuzzSchema[T]) Fields() []BuzzField {
 	return s.fields
 }

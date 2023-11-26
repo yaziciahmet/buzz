@@ -7,9 +7,11 @@ type BuzzField interface {
 	SetName(n string)
 	Type() reflect.Type
 	Validate(v any) error
+	Clone() BuzzField
 }
 
 func Field(name string, field BuzzField) BuzzField {
-	field.SetName(name)
-	return field
+	clone := field.Clone()
+	clone.SetName(name)
+	return clone
 }

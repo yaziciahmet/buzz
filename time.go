@@ -46,6 +46,13 @@ func (t *BuzzTime) Validate(v any) error {
 	return nil
 }
 
+func (t *BuzzTime) Clone() BuzzField {
+	return &BuzzTime{
+		name:          t.name,
+		validateFuncs: t.validateFuncs,
+	}
+}
+
 func (t *BuzzTime) After(timestamp time.Time) *BuzzTime {
 	t.addValidateFunc(func(v time.Time) error {
 		if v.After(timestamp) {

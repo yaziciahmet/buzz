@@ -45,6 +45,14 @@ func (s *BuzzSlice[T]) Validate(v any) error {
 	return nil
 }
 
+func (s *BuzzSlice[T]) Clone() BuzzField {
+	return &BuzzSlice[T]{
+		name:          s.name,
+		validateFuncs: s.validateFuncs,
+		refType:       s.refType,
+	}
+}
+
 func (s *BuzzSlice[T]) Min(min int) *BuzzSlice[T] {
 	s.addValidateFunc(func(v []T) error {
 		if min > len(v) {

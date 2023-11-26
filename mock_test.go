@@ -16,6 +16,10 @@ type Id struct {
 	Id int
 }
 
+type Id2 struct {
+	Id2 int
+}
+
 type UserExtended struct {
 	Id     int
 	Name   string

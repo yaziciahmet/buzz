@@ -54,6 +54,15 @@ func (p *BuzzPtr) Validate(v any) error {
 	return p.field.Validate(refValue.Elem().Interface())
 }
 
+func (p *BuzzPtr) Clone() BuzzField {
+	return &BuzzPtr{
+		name:     p.name,
+		nullable: p.nullable,
+		field:    p.field,
+		refType:  p.refType,
+	}
+}
+
 func (p *BuzzPtr) Nullable() *BuzzPtr {
 	p.nullable = true
 	return p

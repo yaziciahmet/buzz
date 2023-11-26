@@ -304,3 +304,25 @@ func Test_SchemaComplexStruct(t *testing.T) {
 		t.FailNow()
 	}
 }
+
+func Test_SchemaReuseFieldInDifferentSchemas(t *testing.T) {
+	numberField := Number[int]().Min(1)
+
+	schema1 := Schema(
+		Id{},
+		Field("Id", numberField),
+	)
+
+	schema2 := Schema(
+		Id2{},
+		Field("Id2", numberField),
+	)
+
+	if err := schema1.Validate(Id{Id: 1}); err != nil {
+		t.FailNow()
+	}
+
+	if err := schema2.Validate(Id2{Id2: 1}); err != nil {
+		t.FailNow()
+	}
+}
