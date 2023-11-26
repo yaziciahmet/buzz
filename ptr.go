@@ -6,16 +6,16 @@ import (
 
 type BuzzPtr struct {
 	name     string
-	nullable bool
 	field    BuzzField
 	refType  reflect.Type
+	nullable bool
 }
 
 func Ptr(field BuzzField) *BuzzPtr {
 	return &BuzzPtr{
-		nullable: false,
 		field:    field,
 		refType:  reflect.New(field.Type()).Type(),
+		nullable: true,
 	}
 }
 
@@ -32,7 +32,11 @@ func (p *BuzzPtr) Validate(v any) error {
 	refKind := refValue.Kind()
 
 	if refKind == reflect.Invalid {
-		return nil
+		if p.nullable {
+			return nil
+		}
+
+		return makeValidationError("", "nonnil", "pointer is not nullable")
 	}
 
 	if refKind != reflect.Pointer {
@@ -44,7 +48,7 @@ func (p *BuzzPtr) Validate(v any) error {
 			return nil
 		}
 
-		return makeValidationError("", "nullable", "pointer is not nullable")
+		return makeValidationError("", "nonnil", "pointer is not nullable")
 	}
 
 	return p.field.Validate(refValue.Elem().Interface())
@@ -64,7 +68,7 @@ func (p *BuzzPtr) Clone() BuzzField {
 	}
 }
 
-func (p *BuzzPtr) Nullable() *BuzzPtr {
-	p.nullable = true
+func (p *BuzzPtr) Nonnil() *BuzzPtr {
+	p.nullable = false
 	return p
 }

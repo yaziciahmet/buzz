@@ -72,8 +72,8 @@ func Benchmark_ComplexStruct(b *testing.B) {
 		Field("FriendsWithPtrUsers", Slice[*User]().Min(1)),
 		Field("Admin", Bool().True()),
 		Field("CreatedAt", Time().After(now.Add(-1))),
-		Field("UpdatedAt", Ptr(Time())),
-		Field("LastError", Ptr(String()).Nullable()),
+		Field("UpdatedAt", Ptr(Time()).Nonnil()),
+		Field("LastError", Ptr(String())),
 	).Custom(func(cs ComplexStruct) error {
 		if cs.LastError != nil {
 			return errors.New(*cs.LastError)
@@ -135,8 +135,8 @@ func Benchmark_ComplexStructParallel(b *testing.B) {
 		Field("FriendsWithPtrUsers", Slice[*User]().Min(1)),
 		Field("Admin", Bool().True()),
 		Field("CreatedAt", Time().After(now.Add(-1))),
-		Field("UpdatedAt", Ptr(Time())),
-		Field("LastError", Ptr(String()).Nullable()),
+		Field("UpdatedAt", Ptr(Time()).Nonnil()),
+		Field("LastError", Ptr(String())),
 	).Custom(func(cs ComplexStruct) error {
 		if cs.LastError != nil {
 			return errors.New(*cs.LastError)

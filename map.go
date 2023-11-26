@@ -8,11 +8,13 @@ type BuzzMap[K comparable, V any] struct {
 	name          string
 	validateFuncs []BuzzMapValidateFunc[K, V]
 	refType       reflect.Type
+	nullable      bool
 }
 
 func Map[K comparable, V any]() *BuzzMap[K, V] {
 	return &BuzzMap[K, V]{
-		refType: reflect.TypeOf(*new(map[K]V)),
+		refType:  reflect.TypeOf(*new(map[K]V)),
+		nullable: true,
 	}
 }
 
@@ -25,6 +27,14 @@ func (m *BuzzMap[K, V]) Type() reflect.Type {
 }
 
 func (m *BuzzMap[K, V]) Validate(v any) error {
+	if v == nil {
+		if m.nullable {
+			return nil
+		}
+
+		return makeValidationError("", "nonnil", "map not nullable")
+	}
+
 	vMap, ok := v.(map[K]V)
 	if !ok {
 		return makeValidationError("", "type", "invalid map type")
@@ -53,12 +63,7 @@ func (m *BuzzMap[K, V]) Clone() BuzzField {
 }
 
 func (m *BuzzMap[K, V]) Nonnil() *BuzzMap[K, V] {
-	m.addValidateFunc(func(v map[K]V) error {
-		if v == nil {
-			return makeValidationError("", "nonnil", "nonnil failed")
-		}
-		return nil
-	})
+	m.nullable = false
 	return m
 }
 

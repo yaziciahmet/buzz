@@ -11,11 +11,13 @@ type BuzzSlice[T any] struct {
 	name          string
 	validateFuncs []BuzzSliceValidateFunc[T]
 	refType       reflect.Type
+	nullable      bool
 }
 
 func Slice[T any]() *BuzzSlice[T] {
 	return &BuzzSlice[T]{
-		refType: reflect.TypeOf(*new([]T)),
+		refType:  reflect.TypeOf(*new([]T)),
+		nullable: true,
 	}
 }
 
@@ -28,12 +30,20 @@ func (s *BuzzSlice[T]) Type() reflect.Type {
 }
 
 func (s *BuzzSlice[T]) Validate(v any) error {
-	for _, valFn := range s.validateFuncs {
-		vTSlice, ok := v.([]T)
-		if !ok {
-			return makeValidationError("", "type", "type not []T")
+	if v == nil {
+		if s.nullable {
+			return nil
 		}
 
+		return makeValidationError("", "nonnil", "slice not nullable")
+	}
+
+	vTSlice, ok := v.([]T)
+	if !ok {
+		return makeValidationError("", "type", "type not []T")
+	}
+
+	for _, valFn := range s.validateFuncs {
 		if err := valFn(vTSlice); err != nil {
 			return err
 		}
@@ -95,12 +105,7 @@ func (s *BuzzSlice[T]) Nonempty() *BuzzSlice[T] {
 }
 
 func (s *BuzzSlice[T]) Nonnil() *BuzzSlice[T] {
-	s.addValidateFunc(func(v []T) error {
-		if v == nil {
-			return makeValidationError("", "nonnil", "nonnil failed")
-		}
-		return nil
-	})
+	s.nullable = false
 	return s
 }
 

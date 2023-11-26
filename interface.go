@@ -10,6 +10,7 @@ type BuzzInterface[T any] struct {
 	name          string
 	validateFuncs []BuzzInterfaceValidateFunc[T]
 	refType       reflect.Type
+	nullable      bool
 }
 
 func Interface[T any]() *BuzzInterface[T] {
@@ -19,7 +20,8 @@ func Interface[T any]() *BuzzInterface[T] {
 	}
 
 	return &BuzzInterface[T]{
-		refType: refType,
+		refType:  refType,
+		nullable: true,
 	}
 }
 
@@ -32,12 +34,20 @@ func (i *BuzzInterface[T]) Type() reflect.Type {
 }
 
 func (i *BuzzInterface[T]) Validate(v any) error {
-	for _, valFn := range i.validateFuncs {
-		viface, ok := v.(T)
-		if !ok {
-			return makeValidationError("", "type", "type not T")
+	if v == nil {
+		if i.nullable {
+			return nil
 		}
 
+		return makeValidationError("", "nonnil", "interface not nullable")
+	}
+
+	viface, ok := v.(T)
+	if !ok {
+		return makeValidationError("", "type", "interface type not T")
+	}
+
+	for _, valFn := range i.validateFuncs {
 		if err := valFn(viface); err != nil {
 			return err
 		}
@@ -56,6 +66,11 @@ func (i *BuzzInterface[T]) Clone() BuzzField {
 		validateFuncs: i.validateFuncs,
 		refType:       i.refType,
 	}
+}
+
+func (i *BuzzInterface[T]) Nonnil() *BuzzInterface[T] {
+	i.nullable = false
+	return i
 }
 
 func (i *BuzzInterface[T]) MustBeType(typ T) *BuzzInterface[T] {
