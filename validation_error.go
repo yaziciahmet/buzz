@@ -30,6 +30,15 @@ func NewFieldErrorAggregator() *FieldErrorAggregator {
 	return &FieldErrorAggregator{}
 }
 
+func (a *FieldErrorAggregator) Error() string {
+	if a.Empty() {
+		return ""
+	}
+
+	return a.Errors[0].Error()
+}
+
+
 func (a *FieldErrorAggregator) Handle(err error) error {
 	switch e := err.(type) {
 	case FieldError:
@@ -53,14 +62,14 @@ func (a *FieldErrorAggregator) Merge(aggr *FieldErrorAggregator) {
 	a.Errors = append(a.Errors, aggr.Errors...)
 }
 
-func (a *FieldErrorAggregator) Error() string {
-	if a.Empty() {
-		return ""
-	}
-
-	return a.Errors[0].Error()
-}
-
 func (a *FieldErrorAggregator) Empty() bool {
 	return len(a.Errors) == 0
+}
+
+func (a *FieldErrorAggregator) OrNil() *FieldErrorAggregator {
+	if a.Empty() {
+		return nil
+	}
+
+	return a
 }
