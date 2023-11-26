@@ -51,3 +51,9 @@ func Test_StringLenFail(t *testing.T) {
 		t.FailNow()
 	}
 }
+
+func Test_StringUUIDSuccess(t *testing.T) {
+	if err := String().UUID().Validate("096653e9-32e1-4325-86ff-b316596b5a9a"); err != nil {
+		t.FailNow()
+	}
+}
