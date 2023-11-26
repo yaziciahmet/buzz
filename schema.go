@@ -67,12 +67,12 @@ func (s *BuzzSchema[T]) Validate(obj any) error {
 		}
 	}
 
-	for _, valFn := range s.validateFuncs {
-		objT, ok := obj.(T)
-		if !ok {
-			return makeValidationError("", "type", "type not T")
-		}
+	objT, ok := obj.(T)
+	if !ok {
+		return makeValidationError("", "type", "type not T")
+	}
 
+	for _, valFn := range s.validateFuncs {
 		if err := valFn(objT); err != nil {
 			return err
 		}

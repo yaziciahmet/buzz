@@ -31,12 +31,12 @@ func (n *BuzzNumber[T]) Type() reflect.Type {
 }
 
 func (n *BuzzNumber[T]) Validate(v any) error {
-	for _, valFn := range n.validateFuncs {
-		vint, ok := v.(T)
-		if !ok {
-			return makeValidationError("", "type", "type not T")
-		}
+	vint, ok := v.(T)
+	if !ok {
+		return makeValidationError("", "type", "type not T")
+	}
 
+	for _, valFn := range n.validateFuncs {
 		if err := valFn(vint); err != nil {
 			return err
 		}

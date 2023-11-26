@@ -34,12 +34,12 @@ func (t *BuzzTime) WithName(name string) BuzzField {
 }
 
 func (t *BuzzTime) Validate(v any) error {
-	for _, valFn := range t.validateFuncs {
-		vtime, ok := v.(time.Time)
-		if !ok {
-			return makeValidationError("", "type", "type not string")
-		}
+	vtime, ok := v.(time.Time)
+	if !ok {
+		return makeValidationError("", "type", "type not string")
+	}
 
+	for _, valFn := range t.validateFuncs {
 		if err := valFn(vtime); err != nil {
 			return err
 		}
