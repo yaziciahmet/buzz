@@ -5,7 +5,7 @@ import "testing"
 func Benchmark_SimpleStruct(b *testing.B) {
 	schema := Schema(
 		User{},
-		Field("Id", Int().Min(0).Max(1000)),
+		Field("Id", Number[int]().Min(0).Max(1000)),
 		Field("Name", String().Min(2).Max(20)),
 		Field("Email", String().Email()),
 	)
@@ -25,7 +25,7 @@ func Benchmark_SimpleStruct(b *testing.B) {
 func Benchmark_SimpleStructParallel(b *testing.B) {
 	schema := Schema(
 		User{},
-		Field("Id", Int().Min(0).Max(1000)),
+		Field("Id", Number[int]().Min(0).Max(1000)),
 		Field("Name", String().Min(2).Max(20)),
 		Field("Email", String().Email()),
 	)
