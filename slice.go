@@ -23,10 +23,6 @@ func (s *BuzzSlice[T]) Name() string {
 	return s.name
 }
 
-func (s *BuzzSlice[T]) SetName(name string) {
-	s.name = name
-}
-
 func (s *BuzzSlice[T]) Type() reflect.Type {
 	return s.refType
 }
@@ -43,6 +39,11 @@ func (s *BuzzSlice[T]) Validate(v any) error {
 		}
 	}
 	return nil
+}
+
+func (s *BuzzSlice[T]) WithName(name string) BuzzField {
+	s.name = name
+	return s
 }
 
 func (s *BuzzSlice[T]) Clone() BuzzField {

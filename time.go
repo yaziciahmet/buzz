@@ -24,12 +24,13 @@ func (t *BuzzTime) Name() string {
 	return t.name
 }
 
-func (t *BuzzTime) SetName(name string) {
-	t.name = name
-}
-
 func (t *BuzzTime) Type() reflect.Type {
 	return timeReflectType
+}
+
+func (t *BuzzTime) WithName(name string) BuzzField {
+	t.name = name
+	return t
 }
 
 func (t *BuzzTime) Validate(v any) error {

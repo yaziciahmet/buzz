@@ -23,10 +23,6 @@ func (p *BuzzPtr) Name() string {
 	return p.name
 }
 
-func (p *BuzzPtr) SetName(name string) {
-	p.name = name
-}
-
 func (p *BuzzPtr) Type() reflect.Type {
 	return p.refType
 }
@@ -52,6 +48,11 @@ func (p *BuzzPtr) Validate(v any) error {
 	}
 
 	return p.field.Validate(refValue.Elem().Interface())
+}
+
+func (p *BuzzPtr) WithName(name string) BuzzField {
+	p.name = name
+	return p
 }
 
 func (p *BuzzPtr) Clone() BuzzField {

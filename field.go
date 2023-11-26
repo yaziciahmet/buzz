@@ -4,14 +4,13 @@ import "reflect"
 
 type BuzzField interface {
 	Name() string
-	SetName(n string)
 	Type() reflect.Type
 	Validate(v any) error
+	WithName(n string) BuzzField
 	Clone() BuzzField
 }
 
 func Field(name string, field BuzzField) BuzzField {
 	clone := field.Clone()
-	clone.SetName(name)
-	return clone
+	return clone.WithName(name)
 }

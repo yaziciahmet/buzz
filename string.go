@@ -27,10 +27,6 @@ func (s *BuzzString) Name() string {
 	return s.name
 }
 
-func (s *BuzzString) SetName(name string) {
-	s.name = name
-}
-
 func (s *BuzzString) Type() reflect.Type {
 	return stringReflectType
 }
@@ -47,6 +43,11 @@ func (s *BuzzString) Validate(v any) error {
 		}
 	}
 	return nil
+}
+
+func (s *BuzzString) WithName(name string) BuzzField {
+	s.name = name
+	return s
 }
 
 func (s *BuzzString) Clone() BuzzField {

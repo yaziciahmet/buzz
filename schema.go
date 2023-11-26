@@ -84,12 +84,13 @@ func (s *BuzzSchema[T]) Name() string {
 	return s.name
 }
 
-func (s *BuzzSchema[T]) SetName(name string) {
-	s.name = name
-}
-
 func (s *BuzzSchema[T]) Type() reflect.Type {
 	return s.refType
+}
+
+func (s *BuzzSchema[T]) WithName(name string) BuzzField {
+	s.name = name
+	return s
 }
 
 func (s *BuzzSchema[T]) Clone() BuzzField {

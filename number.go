@@ -26,10 +26,6 @@ func (n *BuzzNumber[T]) Name() string {
 	return n.name
 }
 
-func (n *BuzzNumber[T]) SetName(name string) {
-	n.name = name
-}
-
 func (n *BuzzNumber[T]) Type() reflect.Type {
 	return n.refType
 }
@@ -46,6 +42,11 @@ func (n *BuzzNumber[T]) Validate(v any) error {
 		}
 	}
 	return nil
+}
+
+func (n *BuzzNumber[T]) WithName(name string) BuzzField {
+	n.name = name
+	return n
 }
 
 func (n *BuzzNumber[T]) Clone() BuzzField {

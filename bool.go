@@ -19,10 +19,6 @@ func (b *BuzzBool) Name() string {
 	return b.name
 }
 
-func (b *BuzzBool) SetName(name string) {
-	b.name = name
-}
-
 func (b *BuzzBool) Type() reflect.Type {
 	return boolReflectType
 }
@@ -42,6 +38,11 @@ func (b *BuzzBool) Validate(v any) error {
 	}
 
 	return nil
+}
+
+func (b *BuzzBool) WithName(name string) BuzzField {
+	b.name = name
+	return b
 }
 
 func (b *BuzzBool) Clone() BuzzField {
