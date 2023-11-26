@@ -6,9 +6,11 @@ var (
 	boolReflectType = reflect.TypeOf(false)
 )
 
+type BuzzBoolValidateFunc func(bool) error
+
 type BuzzBool struct {
 	name          string
-	expectedValue *bool
+	validateFuncs []BuzzBoolValidateFunc
 }
 
 func Bool() *BuzzBool {
@@ -29,12 +31,10 @@ func (b *BuzzBool) Validate(v any) error {
 		return makeValidationError("", "type", "expected bool type")
 	}
 
-	if b.expectedValue == nil {
-		return nil
-	}
-
-	if vBool != *b.expectedValue {
-		return makeValidationError("", "value", "expected different bool value")
+	for _, valFn := range b.validateFuncs {
+		if err := valFn(vBool); err != nil {
+			return err
+		}
 	}
 
 	return nil
@@ -48,18 +48,35 @@ func (b *BuzzBool) WithName(name string) BuzzField {
 func (b *BuzzBool) Clone() BuzzField {
 	return &BuzzBool{
 		name:          b.name,
-		expectedValue: b.expectedValue,
+		validateFuncs: b.validateFuncs,
 	}
 }
 
 func (b *BuzzBool) True() *BuzzBool {
-	b.expectedValue = new(bool)
-	*b.expectedValue = true
+	b.addValidateFunc(func(v bool) error {
+		if v {
+			return nil
+		}
+		return makeValidationError("", "true", "expected true")
+	})
 	return b
 }
 
 func (b *BuzzBool) False() *BuzzBool {
-	b.expectedValue = new(bool)
-	*b.expectedValue = false
+	b.addValidateFunc(func(v bool) error {
+		if !v {
+			return nil
+		}
+		return makeValidationError("", "false", "expected false")
+	})
 	return b
+}
+
+func (b *BuzzBool) Custom(fn BuzzBoolValidateFunc) *BuzzBool {
+	b.addValidateFunc(fn)
+	return b
+}
+
+func (b *BuzzBool) addValidateFunc(fn BuzzBoolValidateFunc) {
+	b.validateFuncs = append(b.validateFuncs, fn)
 }
