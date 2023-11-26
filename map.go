@@ -1,6 +1,9 @@
 package buzz
 
-import "reflect"
+import (
+	"fmt"
+	"reflect"
+)
 
 type BuzzMapValidateFunc[K comparable, V any] func(map[K]V) error
 
@@ -37,7 +40,7 @@ func (m *BuzzMap[K, V]) Validate(v any) error {
 
 	vMap, ok := v.(map[K]V)
 	if !ok {
-		return MakeFieldError("", "type", "invalid map type")
+		return fmt.Errorf(invalidTypeMsg, m.refType, v)
 	}
 
 	for _, valFn := range m.validateFuncs {

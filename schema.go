@@ -61,7 +61,7 @@ func Schema[T any](fields ...BuzzField) *BuzzSchema[T] {
 func (s *BuzzSchema[T]) Validate(obj any) error {
 	objT, ok := obj.(T)
 	if !ok {
-		return MakeFieldError("", "type", "type not T")
+		return fmt.Errorf(invalidTypeMsg, s.refType, obj)
 	}
 
 	valueObj := reflect.ValueOf(obj)

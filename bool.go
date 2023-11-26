@@ -1,6 +1,9 @@
 package buzz
 
-import "reflect"
+import (
+	"fmt"
+	"reflect"
+)
 
 var (
 	boolReflectType = reflect.TypeOf(false)
@@ -28,7 +31,7 @@ func (b *BuzzBool) Type() reflect.Type {
 func (b *BuzzBool) Validate(v any) error {
 	vBool, ok := v.(bool)
 	if !ok {
-		return MakeFieldError("", "type", "expected bool type")
+		return fmt.Errorf(invalidTypeMsg, boolReflectType, v)
 	}
 
 	for _, valFn := range b.validateFuncs {

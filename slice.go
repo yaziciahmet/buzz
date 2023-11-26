@@ -1,6 +1,7 @@
 package buzz
 
 import (
+	"fmt"
 	"reflect"
 )
 
@@ -40,7 +41,7 @@ func (s *BuzzSlice[T]) Validate(v any) error {
 
 	vTSlice, ok := v.([]T)
 	if !ok {
-		return MakeFieldError("", "type", "type not []T")
+		return fmt.Errorf(invalidTypeMsg, s.refType, v)
 	}
 
 	for _, valFn := range s.validateFuncs {

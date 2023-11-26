@@ -1,6 +1,7 @@
 package buzz
 
 import (
+	"fmt"
 	"reflect"
 )
 
@@ -33,7 +34,7 @@ func (n *BuzzNumber[T]) Type() reflect.Type {
 func (n *BuzzNumber[T]) Validate(v any) error {
 	vint, ok := v.(T)
 	if !ok {
-		return MakeFieldError("", "type", "type not T")
+		return fmt.Errorf(invalidTypeMsg, n.refType, v)
 	}
 
 	for _, valFn := range n.validateFuncs {

@@ -1,6 +1,7 @@
 package buzz
 
 import (
+	"fmt"
 	"net/mail"
 	"net/url"
 	"reflect"
@@ -34,7 +35,7 @@ func (s *BuzzString) Type() reflect.Type {
 func (s *BuzzString) Validate(v any) error {
 	vstr, ok := v.(string)
 	if !ok {
-		return MakeFieldError("", "type", "type not string")
+		return fmt.Errorf(invalidTypeMsg, stringReflectType, v)
 	}
 
 	for _, valFn := range s.validateFuncs {

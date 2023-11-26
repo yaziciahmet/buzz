@@ -1,5 +1,9 @@
 package buzz
 
+const (
+	invalidTypeMsg = "invalid type. expected: %s received: %T"
+)
+
 type FieldError struct {
 	Name       string
 	Constraint string
@@ -26,10 +30,6 @@ func NewFieldErrorAggregator() *FieldErrorAggregator {
 	return &FieldErrorAggregator{}
 }
 
-func (a *FieldErrorAggregator) Add(err FieldError) {
-	a.Errors = append(a.Errors, err)
-}
-
 func (a *FieldErrorAggregator) Handle(err error) error {
 	switch e := err.(type) {
 	case FieldError:
@@ -45,10 +45,22 @@ func (a *FieldErrorAggregator) Handle(err error) error {
 	return nil
 }
 
+func (a *FieldErrorAggregator) Add(err FieldError) {
+	a.Errors = append(a.Errors, err)
+}
+
 func (a *FieldErrorAggregator) Merge(aggr *FieldErrorAggregator) {
 	a.Errors = append(a.Errors, aggr.Errors...)
 }
 
 func (a *FieldErrorAggregator) Error() string {
-	return ""
+	if a.Empty() {
+		return ""
+	}
+
+	return a.Errors[0].Error()
+}
+
+func (a *FieldErrorAggregator) Empty() bool {
+	return len(a.Errors) == 0
 }

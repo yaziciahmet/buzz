@@ -1,6 +1,7 @@
 package buzz
 
 import (
+	"fmt"
 	"reflect"
 	"time"
 )
@@ -36,7 +37,7 @@ func (t *BuzzTime) WithName(name string) BuzzField {
 func (t *BuzzTime) Validate(v any) error {
 	vtime, ok := v.(time.Time)
 	if !ok {
-		return MakeFieldError("", "type", "type not string")
+		return fmt.Errorf(invalidTypeMsg, timeReflectType, v)
 	}
 
 	for _, valFn := range t.validateFuncs {

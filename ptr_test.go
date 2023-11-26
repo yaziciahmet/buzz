@@ -1,6 +1,7 @@
 package buzz
 
 import (
+	"fmt"
 	"reflect"
 	"testing"
 )
@@ -29,6 +30,17 @@ func Test_PtrValidateNull(t *testing.T) {
 func Test_PtrValidateNullWithType(t *testing.T) {
 	var str *string
 	if err := Ptr(String().Email()).Validate(str); err != nil {
+		t.FailNow()
+	}
+}
+
+func Test_PtrInvalidTypeError(t *testing.T) {
+	i := new(int)
+	*i = 10
+
+	err := Ptr(String()).Validate(i)
+	if err.Error() != fmt.Sprintf(invalidTypeMsg, "*string", i) {
+		t.Log(err)
 		t.FailNow()
 	}
 }

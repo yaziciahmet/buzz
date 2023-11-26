@@ -1,6 +1,7 @@
 package buzz
 
 import (
+	"fmt"
 	"reflect"
 )
 
@@ -44,7 +45,7 @@ func (i *BuzzInterface[T]) Validate(v any) error {
 
 	viface, ok := v.(T)
 	if !ok {
-		return MakeFieldError("", "type", "interface type not T")
+		return fmt.Errorf(invalidTypeMsg, i.refType, v)
 	}
 
 	for _, valFn := range i.validateFuncs {

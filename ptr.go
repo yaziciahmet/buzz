@@ -1,6 +1,7 @@
 package buzz
 
 import (
+	"fmt"
 	"reflect"
 )
 
@@ -40,7 +41,7 @@ func (p *BuzzPtr) Validate(v any) error {
 	}
 
 	if refKind != reflect.Pointer {
-		return MakeFieldError("", "type", "type must be pointer")
+		return fmt.Errorf(invalidTypeMsg, p.refType, v)
 	}
 
 	if refValue.IsNil() {
@@ -51,7 +52,12 @@ func (p *BuzzPtr) Validate(v any) error {
 		return MakeFieldError("", "nonnil", "pointer is not nullable")
 	}
 
-	return p.field.Validate(refValue.Elem().Interface())
+	refValueElem := refValue.Elem()
+	if refValueElem.Type() != p.field.Type() {
+		return fmt.Errorf(invalidTypeMsg, p.refType, v)
+	}
+
+	return p.field.Validate(refValueElem.Interface())
 }
 
 func (p *BuzzPtr) WithName(name string) BuzzField {
