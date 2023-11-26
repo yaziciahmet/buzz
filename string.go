@@ -15,6 +15,7 @@ var (
 type BuzzStringValidateFunc func(string) error
 
 type BuzzString struct {
+	name          string
 	validateFuncs []BuzzStringValidateFunc
 }
 
@@ -22,13 +23,21 @@ func String() *BuzzString {
 	return &BuzzString{}
 }
 
+func (s *BuzzString) Name() string {
+	return s.name
+}
+
+func (s *BuzzString) SetName(name string) {
+	s.name = name
+}
+
 func (s *BuzzString) Type() reflect.Type {
 	return stringReflectType
 }
 
-func (s *BuzzString) Validate(v string) error {
+func (s *BuzzString) Validate(v any) error {
 	for _, valFn := range s.validateFuncs {
-		if err := valFn(v); err != nil {
+		if err := valFn(v.(string)); err != nil {
 			return err
 		}
 	}

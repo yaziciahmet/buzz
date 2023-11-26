@@ -9,6 +9,7 @@ var (
 type BuzzIntValidateFunc func(v int) error
 
 type BuzzInt struct {
+	name          string
 	validateFuncs []BuzzIntValidateFunc
 }
 
@@ -16,13 +17,21 @@ func Int() *BuzzInt {
 	return &BuzzInt{}
 }
 
+func (i *BuzzInt) Name() string {
+	return i.name
+}
+
+func (i *BuzzInt) SetName(name string) {
+	i.name = name
+}
+
 func (i *BuzzInt) Type() reflect.Type {
 	return intReflectType
 }
 
-func (i *BuzzInt) Validate(v int) error {
+func (i *BuzzInt) Validate(v any) error {
 	for _, valFn := range i.validateFuncs {
-		if err := valFn(v); err != nil {
+		if err := valFn(v.(int)); err != nil {
 			return err
 		}
 	}

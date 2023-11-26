@@ -54,6 +54,26 @@ func Test_SchemaStructWithUnexportedFields(t *testing.T) {
 	}
 }
 
+func Test_SchemaStructWithSlice(t *testing.T) {
+	if err := Schema(
+		StructWithSlice{},
+		Field("Id", Int()),
+		Field("List", Slice[string]().Nonempty()),
+		Field("List2", Slice[int]().ForEach(func(v int) error {
+			if v > 5 {
+				return errors.New("you shall not pass")
+			}
+			return nil
+		})),
+	).Validate(StructWithSlice{
+		Id:    100,
+		List:  []string{"brotherhood"},
+		List2: []int{1, 2, 3},
+	}); err != nil {
+		t.FailNow()
+	}
+}
+
 func Test_SchemaExtendSuccess(t *testing.T) {
 	if err := Extend(
 		Schema(

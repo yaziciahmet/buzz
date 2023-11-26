@@ -12,6 +12,7 @@ var (
 type BuzzTimestampValidateFunc func(t time.Time) error
 
 type BuzzTimestamp struct {
+	name          string
 	validateFuncs []BuzzTimestampValidateFunc
 }
 
@@ -19,13 +20,21 @@ func Timestamp() *BuzzTimestamp {
 	return &BuzzTimestamp{}
 }
 
+func (t *BuzzTimestamp) Name() string {
+	return t.name
+}
+
+func (t *BuzzTimestamp) SetName(name string) {
+	t.name = name
+}
+
 func (t *BuzzTimestamp) Type() reflect.Type {
 	return timeReflectType
 }
 
-func (t *BuzzTimestamp) Validate(v time.Time) error {
+func (t *BuzzTimestamp) Validate(v any) error {
 	for _, valFn := range t.validateFuncs {
-		if err := valFn(v); err != nil {
+		if err := valFn(v.(time.Time)); err != nil {
 			return err
 		}
 	}

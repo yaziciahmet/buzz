@@ -36,3 +36,9 @@ type UserWithUnexportedFields struct {
 	Id   int
 	name string
 }
+
+type StructWithSlice struct {
+	Id    int
+	List  []string
+	List2 []int
+}

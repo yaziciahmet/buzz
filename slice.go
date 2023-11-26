@@ -4,28 +4,36 @@ import (
 	"reflect"
 )
 
-var (
-	sliceReflectType = reflect.TypeOf([]int{})
-)
-
 type BuzzSliceValidateFunc[T any] func(v []T) error
 type BuzzSliceElementValidateFunc[T any] func(v T) error
 
 type BuzzSlice[T any] struct {
+	name          string
 	validateFuncs []BuzzSliceValidateFunc[T]
+	refType       reflect.Type
 }
 
 func Slice[T any]() *BuzzSlice[T] {
-	return &BuzzSlice[T]{}
+	return &BuzzSlice[T]{
+		refType: reflect.TypeOf(*new([]T)),
+	}
+}
+
+func (s *BuzzSlice[T]) Name() string {
+	return s.name
+}
+
+func (s *BuzzSlice[T]) SetName(name string) {
+	s.name = name
 }
 
 func (s *BuzzSlice[T]) Type() reflect.Type {
-	return stringReflectType
+	return s.refType
 }
 
-func (s *BuzzSlice[T]) Validate(v []T) error {
+func (s *BuzzSlice[T]) Validate(v any) error {
 	for _, valFn := range s.validateFuncs {
-		if err := valFn(v); err != nil {
+		if err := valFn(v.([]T)); err != nil {
 			return err
 		}
 	}
@@ -64,7 +72,7 @@ func (s *BuzzSlice[T]) Len(l int) *BuzzSlice[T] {
 
 func (s *BuzzSlice[T]) Nonempty() *BuzzSlice[T] {
 	s.addValidateFunc(func(v []T) error {
-		if len(v) > 0 {
+		if len(v) == 0 {
 			return makeValidationError("", "nonempty", "nonempty failed")
 		}
 		return nil
