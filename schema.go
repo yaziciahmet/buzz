@@ -59,17 +59,17 @@ func Schema[T any](fields ...BuzzField) *BuzzSchema[T] {
 }
 
 func (s *BuzzSchema[T]) Validate(obj any) error {
+	objT, ok := obj.(T)
+	if !ok {
+		return MakeFieldError("", "type", "type not T")
+	}
+
 	valueObj := reflect.ValueOf(obj)
 	for _, f := range s.fields {
 		valueField := valueObj.FieldByName(f.Name())
 		if err := f.Validate(valueField.Interface()); err != nil {
 			return err
 		}
-	}
-
-	objT, ok := obj.(T)
-	if !ok {
-		return MakeFieldError("", "type", "type not T")
 	}
 
 	for _, valFn := range s.validateFuncs {
