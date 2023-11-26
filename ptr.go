@@ -1,6 +1,8 @@
 package buzz
 
-import "reflect"
+import (
+	"reflect"
+)
 
 type BuzzPtr struct {
 	name     string
@@ -31,7 +33,13 @@ func (p *BuzzPtr) Type() reflect.Type {
 
 func (p *BuzzPtr) Validate(v any) error {
 	refValue := reflect.ValueOf(v)
-	if refValue.Kind() != reflect.Pointer {
+	refKind := refValue.Kind()
+
+	if refKind == reflect.Invalid {
+		return nil
+	}
+
+	if refKind != reflect.Pointer {
 		return makeValidationError("", "type", "type must be pointer")
 	}
 
