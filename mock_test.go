@@ -67,3 +67,17 @@ type ComplexStruct struct {
 	UpdatedAt           *time.Time
 	LastError           *string
 }
+
+type MyError struct{}
+
+func (e *MyError) Error() string {
+	return "error brother"
+}
+
+type MyInterface interface {
+	Method() int
+}
+
+type MyInterfaceStruct struct{}
+
+func (s *MyInterfaceStruct) Method() int { return 5 }

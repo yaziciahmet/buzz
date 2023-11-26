@@ -1,19 +1,11 @@
 package buzz
 
-type ValidationError struct {
-	Field      string
-	Constraint string
-	Message    string
+type BuzzError struct {
+	*BuzzInterface[error]
 }
 
-func makeValidationError(field, constraint, message string) ValidationError {
-	return ValidationError{
-		Field:      field,
-		Constraint: constraint,
-		Message:    message,
+func Error() *BuzzError {
+	return &BuzzError{
+		BuzzInterface: Interface[error](),
 	}
-}
-
-func (e ValidationError) Error() string {
-	return e.Message
 }
