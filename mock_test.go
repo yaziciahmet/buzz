@@ -1,5 +1,7 @@
 package buzz
 
+import "time"
+
 type TestStruct struct {
 	String string
 }
@@ -46,4 +48,17 @@ type StructWithSlice struct {
 type StructWithPointer struct {
 	Id   int
 	Name *string
+}
+
+type ComplexStruct struct {
+	Id       int
+	Email    string
+	Spouse   *User
+	Int64    int64
+	Comments []string
+	Friends  []User
+	FriendsWithPtrUsers []*User
+	CreatedAt time.Time
+	UpdatedAt *time.Time
+	LastError *string
 }
