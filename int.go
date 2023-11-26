@@ -31,7 +31,12 @@ func (i *BuzzInt) Type() reflect.Type {
 
 func (i *BuzzInt) Validate(v any) error {
 	for _, valFn := range i.validateFuncs {
-		if err := valFn(v.(int)); err != nil {
+		vint, ok := v.(int)
+		if !ok {
+			return makeValidationError("", "type", "type not int")
+		}
+
+		if err := valFn(vint); err != nil {
 			return err
 		}
 	}

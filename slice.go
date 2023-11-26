@@ -33,7 +33,12 @@ func (s *BuzzSlice[T]) Type() reflect.Type {
 
 func (s *BuzzSlice[T]) Validate(v any) error {
 	for _, valFn := range s.validateFuncs {
-		if err := valFn(v.([]T)); err != nil {
+		vTSlice, ok := v.([]T)
+		if !ok {
+			return makeValidationError("", "type", "type not []T")
+		}
+
+		if err := valFn(vTSlice); err != nil {
 			return err
 		}
 	}

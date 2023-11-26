@@ -34,7 +34,12 @@ func (t *BuzzTimestamp) Type() reflect.Type {
 
 func (t *BuzzTimestamp) Validate(v any) error {
 	for _, valFn := range t.validateFuncs {
-		if err := valFn(v.(time.Time)); err != nil {
+		vtime, ok := v.(time.Time)
+		if !ok {
+			return makeValidationError("", "type", "type not string")
+		}
+
+		if err := valFn(vtime); err != nil {
 			return err
 		}
 	}

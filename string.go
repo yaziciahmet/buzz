@@ -37,7 +37,12 @@ func (s *BuzzString) Type() reflect.Type {
 
 func (s *BuzzString) Validate(v any) error {
 	for _, valFn := range s.validateFuncs {
-		if err := valFn(v.(string)); err != nil {
+		vstr, ok := v.(string)
+		if !ok {
+			return makeValidationError("", "type", "type not string")
+		}
+
+		if err := valFn(vstr); err != nil {
 			return err
 		}
 	}
