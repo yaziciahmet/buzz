@@ -17,3 +17,15 @@ func Test_MapContainsKey(t *testing.T) {
 		t.FailNow()
 	}
 }
+
+func Test_MapNil(t *testing.T) {
+	if err := Map[any, any]().Validate(nil); err != nil {
+		t.FailNow()
+	}
+}
+
+func Test_MapNonnil(t *testing.T) {
+	if err := Map[any, any]().Nonnil().Validate(nil); err == nil {
+		t.FailNow()
+	}
+}

@@ -40,3 +40,15 @@ func Test_SliceForEachWithFieldValidationSuccess(t *testing.T) {
 		t.FailNow()
 	}
 }
+
+func Test_SliceNil(t *testing.T) {
+	if err := Slice[int]().Validate(nil); err != nil {
+		t.FailNow()
+	}
+}
+
+func Test_SliceNonil(t *testing.T) {
+	if err := Slice[int]().Nonnil().Validate(nil); err == nil {
+		t.FailNow()
+	}
+}

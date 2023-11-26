@@ -27,3 +27,9 @@ func Test_InterfaceCustom(t *testing.T) {
 		t.FailNow()
 	}
 }
+
+func Test_InterfaceNil(t *testing.T) {
+	if err := Interface[MyInterface]().Validate(nil); err != nil {
+		t.FailNow()
+	}
+}
