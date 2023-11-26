@@ -51,14 +51,15 @@ type StructWithPointer struct {
 }
 
 type ComplexStruct struct {
-	Id       int
-	Email    string
-	Spouse   *User
-	Int64    int64
-	Comments []string
-	Friends  []User
+	Id                  int
+	Email               string
+	Spouse              *User
+	Int64               int64
+	Comments            []string
+	Friends             []User
 	FriendsWithPtrUsers []*User
-	CreatedAt time.Time
-	UpdatedAt *time.Time
-	LastError *string
+	Admin               bool
+	CreatedAt           time.Time
+	UpdatedAt           *time.Time
+	LastError           *string
 }

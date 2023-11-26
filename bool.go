@@ -1,0 +1,57 @@
+package buzz
+
+import "reflect"
+
+var (
+	boolReflectType = reflect.TypeOf(false)
+)
+
+type BuzzBool struct {
+	name          string
+	expectedValue *bool
+}
+
+func Bool() *BuzzBool {
+	return &BuzzBool{}
+}
+
+func (b *BuzzBool) Name() string {
+	return b.name
+}
+
+func (b *BuzzBool) SetName(name string) {
+	b.name = name
+}
+
+func (b *BuzzBool) Type() reflect.Type {
+	return boolReflectType
+}
+
+func (b *BuzzBool) Validate(v any) error {
+	vBool, ok := v.(bool)
+	if !ok {
+		return makeValidationError("", "type", "expected bool type")
+	}
+
+	if b.expectedValue == nil {
+		return nil
+	}
+
+	if vBool != *b.expectedValue {
+		return makeValidationError("", "value", "expected different bool value")
+	}
+
+	return nil
+}
+
+func (b *BuzzBool) True() *BuzzBool {
+	b.expectedValue = new(bool)
+	*b.expectedValue = true
+	return b
+}
+
+func (b *BuzzBool) False() *BuzzBool {
+	b.expectedValue = new(bool)
+	*b.expectedValue = false
+	return b
+}

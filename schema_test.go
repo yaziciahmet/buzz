@@ -266,6 +266,7 @@ func Test_SchemaComplexStruct(t *testing.T) {
 			return nil
 		})),
 		Field("FriendsWithPtrUsers", Slice[*User]().Min(1)),
+		Field("Admin", Bool().True()),
 		Field("CreatedAt", Time().After(now.Add(-1))),
 		Field("UpdatedAt", Ptr(Time())),
 		Field("LastError", Ptr(String()).Nullable()),
@@ -294,6 +295,7 @@ func Test_SchemaComplexStruct(t *testing.T) {
 		FriendsWithPtrUsers: []*User{{
 			Id: 22,
 		}},
+		Admin:     true,
 		CreatedAt: now,
 		UpdatedAt: &now,
 		LastError: nil,
