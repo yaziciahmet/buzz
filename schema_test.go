@@ -7,8 +7,7 @@ import (
 )
 
 func Test_SchemaBasicStructSuccess(t *testing.T) {
-	if err := Schema(
-		User{},
+	if err := Schema[User](
 		Field("Id", Number[int]().Min(0).Max(1000)),
 		Field("Name", String().Min(2).Max(20)),
 		Field("Email", String().Email()),
@@ -22,12 +21,10 @@ func Test_SchemaBasicStructSuccess(t *testing.T) {
 }
 
 func Test_SchemaNestedStructSuccess(t *testing.T) {
-	if err := Schema(
-		UserWithAddress{},
+	if err := Schema[UserWithAddress](
 		Field("Id", Number[int]().Min(0).Max(1000)),
 		Field("Name", String().Min(2).Max(20)),
-		Field("Address", Schema[any](
-			Address{},
+		Field("Address", Schema[Address](
 			Field("ZipCode", Number[int]().Min(0).Max(100000)),
 			Field("Text", String().Min(5).Max(100)),
 		)),
@@ -44,8 +41,7 @@ func Test_SchemaNestedStructSuccess(t *testing.T) {
 }
 
 func Test_SchemaStructWithUnexportedFields(t *testing.T) {
-	if err := Schema(
-		UserWithUnexportedFields{},
+	if err := Schema[UserWithUnexportedFields](
 		Field("Id", Number[int]().Min(0).Max(1000)),
 	).Validate(UserWithUnexportedFields{
 		Id:   100,
@@ -56,8 +52,7 @@ func Test_SchemaStructWithUnexportedFields(t *testing.T) {
 }
 
 func Test_SchemaStructWithSlice(t *testing.T) {
-	if err := Schema(
-		StructWithSlice{},
+	if err := Schema[StructWithSlice](
 		Field("Id", Number[int]()),
 		Field("List", Slice[string]().Nonempty()),
 		Field("List2", Slice[int]().ForEach(func(v int) error {
@@ -76,14 +71,12 @@ func Test_SchemaStructWithSlice(t *testing.T) {
 }
 
 func Test_SchemaExtendSuccess(t *testing.T) {
-	if err := Extend(
-		Schema(
-			User{},
+	if err := Extend[UserExtended](
+		Schema[User](
 			Field("Id", Number[int]().Min(0).Max(1000)),
 			Field("Name", String().Min(2).Max(20)),
 			Field("Email", String().Email()),
 		),
-		UserExtended{},
 		Field("String", String().Min(5)),
 	).Validate(UserExtended{
 		Id:     1000,
@@ -96,14 +89,12 @@ func Test_SchemaExtendSuccess(t *testing.T) {
 }
 
 func Test_SchemaExtendFail(t *testing.T) {
-	if err := Extend(
-		Schema(
-			User{},
+	if err := Extend[UserExtended](
+		Schema[User](
 			Field("Id", Number[int]().Min(0).Max(1000)),
 			Field("Name", String().Min(2).Max(20)),
 			Field("Email", String().Email()),
 		),
-		UserExtended{},
 		Field("String", String().Min(5)),
 	).Validate(UserExtended{
 		Id:     10000,
@@ -116,14 +107,12 @@ func Test_SchemaExtendFail(t *testing.T) {
 }
 
 func Test_SchemaPickSuccess(t *testing.T) {
-	if err := Pick(
-		Schema(
-			User{},
+	if err := Pick[Id](
+		Schema[User](
 			Field("Id", Number[int]().Min(0).Max(1000)),
 			Field("Name", String().Min(2).Max(20)),
 			Field("Email", String().Email()),
 		),
-		Id{},
 		"Id",
 	).Validate(Id{
 		Id: 100,
@@ -133,14 +122,12 @@ func Test_SchemaPickSuccess(t *testing.T) {
 }
 
 func Test_SchemaPickFail(t *testing.T) {
-	if err := Pick(
-		Schema(
-			User{},
+	if err := Pick[Id](
+		Schema[User](
 			Field("Id", Number[int]().Min(0).Max(1000)),
 			Field("Name", String().Min(2).Max(20)),
 			Field("Email", String().Email()),
 		),
-		Id{},
 		"Id",
 	).Validate(Id{
 		Id: 10000,
@@ -150,14 +137,12 @@ func Test_SchemaPickFail(t *testing.T) {
 }
 
 func Test_SchemaOmitSuccess(t *testing.T) {
-	if err := Omit(
-		Schema(
-			User{},
+	if err := Omit[Id](
+		Schema[User](
 			Field("Id", Number[int]().Min(0).Max(1000)),
 			Field("Name", String().Min(2).Max(20)),
 			Field("Email", String().Email()),
 		),
-		Id{},
 		"Name",
 		"Email",
 	).Validate(Id{
@@ -168,14 +153,12 @@ func Test_SchemaOmitSuccess(t *testing.T) {
 }
 
 func Test_SchemaOmitFail(t *testing.T) {
-	if err := Omit(
-		Schema(
-			User{},
+	if err := Omit[Id](
+		Schema[User](
 			Field("Id", Number[int]().Min(0).Max(1000)),
 			Field("Name", String().Min(2).Max(20)),
 			Field("Email", String().Email()),
 		),
-		Id{},
 		"Name",
 		"Email",
 	).Validate(Id{
@@ -186,8 +169,7 @@ func Test_SchemaOmitFail(t *testing.T) {
 }
 
 func Test_SchemaCustomSuccess(t *testing.T) {
-	if err := Schema(
-		User{},
+	if err := Schema[User](
 		Field("Id", Number[int]().Min(0).Max(1000)),
 		Field("Name", String().Min(2).Max(20)),
 		Field("Email", String().Email()),
@@ -206,14 +188,12 @@ func Test_SchemaCustomSuccess(t *testing.T) {
 }
 
 func Test_SchemaCustomOnPickFail(t *testing.T) {
-	if err := Pick(
-		Schema(
-			User{},
+	if err := Pick[Id](
+		Schema[User](
 			Field("Id", Number[int]().Min(0).Max(1000)),
 			Field("Name", String().Min(2).Max(20)),
 			Field("Email", String().Email()),
 		),
-		Id{},
 		"Id",
 	).Custom(func(id Id) error {
 		if id.Id != 1000 {
@@ -228,8 +208,7 @@ func Test_SchemaCustomOnPickFail(t *testing.T) {
 }
 
 func Test_SchemaStructWithPointerFieldSuccess(t *testing.T) {
-	schema := Schema(
-		StructWithPointer{},
+	schema := Schema[StructWithPointer](
 		Field("Id", Number[int]()),
 		Field("Name", Ptr(String().Min(4))),
 	)
@@ -247,12 +226,10 @@ func Test_SchemaStructWithPointerFieldSuccess(t *testing.T) {
 func Test_SchemaComplexStruct(t *testing.T) {
 	now := time.Now()
 
-	schema := Schema(
-		ComplexStruct{},
+	schema := Schema[ComplexStruct](
 		Field("Id", Number[int]()),
 		Field("Email", String()),
-		Field("Spouse", Ptr(Schema(
-			User{},
+		Field("Spouse", Ptr(Schema[User](
 			Field("Id", Number[int]().Min(1)),
 			Field("Email", String().Email()),
 			Field("Name", String()),
@@ -316,13 +293,11 @@ func Test_SchemaComplexStruct(t *testing.T) {
 func Test_SchemaReuseFieldInDifferentSchemas(t *testing.T) {
 	numberField := Number[int]().Min(1)
 
-	schema1 := Schema(
-		Id{},
+	schema1 := Schema[Id](
 		Field("Id", numberField),
 	)
 
-	schema2 := Schema(
-		Id2{},
+	schema2 := Schema[Id2](
 		Field("Id2", numberField),
 	)
 

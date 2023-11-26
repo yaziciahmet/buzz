@@ -7,8 +7,7 @@ import (
 )
 
 func Benchmark_SimpleStruct(b *testing.B) {
-	schema := Schema(
-		User{},
+	schema := Schema[User](
 		Field("Id", Number[int]().Min(0).Max(1000)),
 		Field("Name", String().Min(2).Max(20)),
 		Field("Email", String().Email()),
@@ -27,8 +26,7 @@ func Benchmark_SimpleStruct(b *testing.B) {
 }
 
 func Benchmark_SimpleStructParallel(b *testing.B) {
-	schema := Schema(
-		User{},
+	schema := Schema[User](
 		Field("Id", Number[int]().Min(0).Max(1000)),
 		Field("Name", String().Min(2).Max(20)),
 		Field("Email", String().Email()),
@@ -51,12 +49,10 @@ func Benchmark_SimpleStructParallel(b *testing.B) {
 func Benchmark_ComplexStruct(b *testing.B) {
 	now := time.Now()
 
-	schema := Schema(
-		ComplexStruct{},
+	schema := Schema[ComplexStruct](
 		Field("Id", Number[int]()),
 		Field("Email", String()),
-		Field("Spouse", Ptr(Schema(
-			User{},
+		Field("Spouse", Ptr(Schema[User](
 			Field("Id", Number[int]().Min(1)),
 			Field("Email", String().Email()),
 			Field("Name", String()),
@@ -122,12 +118,10 @@ func Benchmark_ComplexStruct(b *testing.B) {
 func Benchmark_ComplexStructParallel(b *testing.B) {
 	now := time.Now()
 
-	schema := Schema(
-		ComplexStruct{},
+	schema := Schema[ComplexStruct](
 		Field("Id", Number[int]()),
 		Field("Email", String()),
-		Field("Spouse", Ptr(Schema(
-			User{},
+		Field("Spouse", Ptr(Schema[User](
 			Field("Id", Number[int]().Min(1)),
 			Field("Email", String().Email()),
 			Field("Name", String()),
