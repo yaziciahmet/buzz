@@ -42,6 +42,18 @@ func Test_SchemaNestedStructSuccess(t *testing.T) {
 	}
 }
 
+func Test_SchemaStructWithUnexportedFields(t *testing.T) {
+	if err := Schema(
+		UserWithUnexportedFields{},
+		Field("Id", Int().Min(0).Max(1000)),
+	).Validate(UserWithUnexportedFields{
+		Id:   100,
+		name: "gonna be ignored brother",
+	}); err != nil {
+		t.FailNow()
+	}
+}
+
 func Test_SchemaExtendSuccess(t *testing.T) {
 	if err := Extend(
 		Schema(

@@ -3,6 +3,7 @@ package buzz
 import (
 	"fmt"
 	"reflect"
+	"unicode"
 )
 
 type BuzzSchemaValidateFunc[T any] func(T) error
@@ -21,21 +22,23 @@ func Schema[T any](refObj T, fields ...*BuzzField) *BuzzSchema[T] {
 
 	refFields := reflect.VisibleFields(refType)
 
-	if len(refFields) != len(fields) {
-		panic("buzz: reference object's field count does not match to the number of fields")
-	}
-
+	var exportedFields []*BuzzField
 	for _, field := range fields {
 		fieldName := field.Name()
 		fieldType := field.Type()
 
+		if unicode.IsLower(rune(fieldName[0])) {
+			continue
+		}
+
 		found := false
-		for _, reflectField := range refFields {
-			if reflectField.Name == fieldName {
-				if reflectField.Type != fieldType {
+		for _, refField := range refFields {
+			if refField.Name == fieldName {
+				if refField.Type != fieldType {
 					panic(fmt.Sprintf("buzz: field '%s' has mismatching types", fieldName))
 				}
 
+				exportedFields = append(exportedFields, field)
 				found = true
 				break
 			}
@@ -47,7 +50,7 @@ func Schema[T any](refObj T, fields ...*BuzzField) *BuzzSchema[T] {
 	}
 
 	return &BuzzSchema[T]{
-		fields:  fields,
+		fields:  exportedFields,
 		refType: refType,
 	}
 }

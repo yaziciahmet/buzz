@@ -31,3 +31,8 @@ type Address struct {
 	ZipCode int
 	Text    string
 }
+
+type UserWithUnexportedFields struct {
+	Id   int
+	name string
+}
