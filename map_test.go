@@ -6,9 +6,7 @@ import (
 )
 
 func Test_MapType(t *testing.T) {
-	m := map[string]int{}
-	mType := reflect.TypeOf(m)
-
+	mType := reflect.TypeOf(map[string]int{})
 	if Map[string, int]().Type() != mType {
 		t.FailNow()
 	}
