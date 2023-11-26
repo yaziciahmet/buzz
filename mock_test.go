@@ -65,7 +65,7 @@ type ComplexStruct struct {
 	Admin               bool
 	CreatedAt           time.Time
 	UpdatedAt           *time.Time
-	LastError           *string
+	LastErrorMsg        *string
 }
 
 type MyError struct{}

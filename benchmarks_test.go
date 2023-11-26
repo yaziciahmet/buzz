@@ -73,10 +73,10 @@ func Benchmark_ComplexStruct(b *testing.B) {
 		Field("Admin", Bool().True()),
 		Field("CreatedAt", Time().After(now.Add(-1))),
 		Field("UpdatedAt", Ptr(Time()).Nonnil()),
-		Field("LastError", Ptr(String())),
+		Field("LastErrorMsg", Ptr(String())),
 	).Custom(func(cs ComplexStruct) error {
-		if cs.LastError != nil {
-			return errors.New(*cs.LastError)
+		if cs.LastErrorMsg != nil {
+			return errors.New(*cs.LastErrorMsg)
 		}
 		return nil
 	})
@@ -99,10 +99,10 @@ func Benchmark_ComplexStruct(b *testing.B) {
 		FriendsWithPtrUsers: []*User{{
 			Id: 22,
 		}},
-		Admin:     true,
-		CreatedAt: now,
-		UpdatedAt: &now,
-		LastError: nil,
+		Admin:        true,
+		CreatedAt:    now,
+		UpdatedAt:    &now,
+		LastErrorMsg: nil,
 	}
 
 	b.ResetTimer()
@@ -136,10 +136,10 @@ func Benchmark_ComplexStructParallel(b *testing.B) {
 		Field("Admin", Bool().True()),
 		Field("CreatedAt", Time().After(now.Add(-1))),
 		Field("UpdatedAt", Ptr(Time()).Nonnil()),
-		Field("LastError", Ptr(String())),
+		Field("LastErrorMsg", Ptr(String())),
 	).Custom(func(cs ComplexStruct) error {
-		if cs.LastError != nil {
-			return errors.New(*cs.LastError)
+		if cs.LastErrorMsg != nil {
+			return errors.New(*cs.LastErrorMsg)
 		}
 		return nil
 	})
@@ -162,10 +162,10 @@ func Benchmark_ComplexStructParallel(b *testing.B) {
 		FriendsWithPtrUsers: []*User{{
 			Id: 22,
 		}},
-		Admin:     true,
-		CreatedAt: now,
-		UpdatedAt: &now,
-		LastError: nil,
+		Admin:        true,
+		CreatedAt:    now,
+		UpdatedAt:    &now,
+		LastErrorMsg: nil,
 	}
 
 	b.ResetTimer()

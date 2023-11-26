@@ -269,10 +269,10 @@ func Test_SchemaComplexStruct(t *testing.T) {
 		Field("Admin", Bool().True()),
 		Field("CreatedAt", Time().After(now.Add(-1))),
 		Field("UpdatedAt", Ptr(Time()).Nonnil()),
-		Field("LastError", Ptr(String())),
+		Field("LastErrorMsg", Ptr(String())),
 	).Custom(func(cs ComplexStruct) error {
-		if cs.LastError != nil {
-			return errors.New(*cs.LastError)
+		if cs.LastErrorMsg != nil {
+			return errors.New(*cs.LastErrorMsg)
 		}
 		return nil
 	})
@@ -295,10 +295,10 @@ func Test_SchemaComplexStruct(t *testing.T) {
 		FriendsWithPtrUsers: []*User{{
 			Id: 22,
 		}},
-		Admin:     true,
-		CreatedAt: now,
-		UpdatedAt: &now,
-		LastError: nil,
+		Admin:        true,
+		CreatedAt:    now,
+		UpdatedAt:    &now,
+		LastErrorMsg: nil,
 	}
 	if err := schema.Validate(complexStruct1); err != nil {
 		t.FailNow()
