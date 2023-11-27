@@ -75,7 +75,7 @@ func (m *BuzzMap[K, V]) Nonnil() *BuzzMap[K, V] {
 }
 
 func (m *BuzzMap[K, V]) Nonempty() *BuzzMap[K, V] {
-	m.addValidateFunc(func(v map[K]V) error {
+	m.registerValidateFunc(func(v map[K]V) error {
 		if len(v) == 0 {
 			return nonEmptyFieldErr(m.name)
 		}
@@ -85,7 +85,7 @@ func (m *BuzzMap[K, V]) Nonempty() *BuzzMap[K, V] {
 }
 
 func (m *BuzzMap[K, V]) ContainsKey(key K) *BuzzMap[K, V] {
-	m.addValidateFunc(func(v map[K]V) error {
+	m.registerValidateFunc(func(v map[K]V) error {
 		if _, ok := v[key]; !ok {
 			return MakeFieldError(m.name, "ContainsKey", fmt.Sprintf("map %s does not contain key %v", m.name, key))
 		}
@@ -95,10 +95,10 @@ func (m *BuzzMap[K, V]) ContainsKey(key K) *BuzzMap[K, V] {
 }
 
 func (m *BuzzMap[K, V]) Custom(fn BuzzMapValidateFunc[K, V]) *BuzzMap[K, V] {
-	m.addValidateFunc(fn)
+	m.registerValidateFunc(fn)
 	return m
 }
 
-func (m *BuzzMap[K, V]) addValidateFunc(fn BuzzMapValidateFunc[K, V]) {
+func (m *BuzzMap[K, V]) registerValidateFunc(fn BuzzMapValidateFunc[K, V]) {
 	m.validateFuncs = append(m.validateFuncs, fn)
 }

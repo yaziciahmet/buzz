@@ -81,7 +81,7 @@ func (i *BuzzInterface[T]) Nonnil() *BuzzInterface[T] {
 
 func (i *BuzzInterface[T]) MustBeType(typ T) *BuzzInterface[T] {
 	expectedType := reflect.TypeOf(typ)
-	i.addValidateFunc(func(v T) error {
+	i.registerValidateFunc(func(v T) error {
 		actualType := reflect.TypeOf(v)
 		if expectedType != actualType {
 			return MakeFieldError(i.name, "MustBeType", fmt.Sprintf(invalidTypeMsg, expectedType, v))
@@ -94,10 +94,10 @@ func (i *BuzzInterface[T]) MustBeType(typ T) *BuzzInterface[T] {
 }
 
 func (i *BuzzInterface[T]) Custom(fn BuzzInterfaceValidateFunc[T]) *BuzzInterface[T] {
-	i.addValidateFunc(fn)
+	i.registerValidateFunc(fn)
 	return i
 }
 
-func (i *BuzzInterface[T]) addValidateFunc(fn BuzzInterfaceValidateFunc[T]) {
+func (i *BuzzInterface[T]) registerValidateFunc(fn BuzzInterfaceValidateFunc[T]) {
 	i.validateFuncs = append(i.validateFuncs, fn)
 }

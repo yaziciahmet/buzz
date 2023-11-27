@@ -60,7 +60,7 @@ func (t *BuzzTime) Clone() BuzzField {
 }
 
 func (t *BuzzTime) After(timestamp time.Time) *BuzzTime {
-	t.addValidateFunc(func(v time.Time) error {
+	t.registerValidateFunc(func(v time.Time) error {
 		if v.After(timestamp) {
 			return nil
 		}
@@ -70,7 +70,7 @@ func (t *BuzzTime) After(timestamp time.Time) *BuzzTime {
 }
 
 func (t *BuzzTime) Before(timestamp time.Time) *BuzzTime {
-	t.addValidateFunc(func(v time.Time) error {
+	t.registerValidateFunc(func(v time.Time) error {
 		if v.Before(timestamp) {
 			return nil
 		}
@@ -80,7 +80,7 @@ func (t *BuzzTime) Before(timestamp time.Time) *BuzzTime {
 }
 
 func (t *BuzzTime) NotAfter(timestamp time.Time) *BuzzTime {
-	t.addValidateFunc(func(v time.Time) error {
+	t.registerValidateFunc(func(v time.Time) error {
 		if v.After(timestamp) {
 			return MakeFieldError(t.name, "NotAfter", fmt.Sprintf("%s must not be after %s", t.name, timestamp))
 		}
@@ -90,7 +90,7 @@ func (t *BuzzTime) NotAfter(timestamp time.Time) *BuzzTime {
 }
 
 func (t *BuzzTime) NotBefore(timestamp time.Time) *BuzzTime {
-	t.addValidateFunc(func(v time.Time) error {
+	t.registerValidateFunc(func(v time.Time) error {
 		if v.Before(timestamp) {
 			return MakeFieldError(t.name, "NotBefore", fmt.Sprintf("%s must not be before %s", t.name, timestamp))
 		}
@@ -100,10 +100,10 @@ func (t *BuzzTime) NotBefore(timestamp time.Time) *BuzzTime {
 }
 
 func (t *BuzzTime) Custom(fn BuzzTimeValidateFunc) *BuzzTime {
-	t.addValidateFunc(fn)
+	t.registerValidateFunc(fn)
 	return t
 }
 
-func (t *BuzzTime) addValidateFunc(fn BuzzTimeValidateFunc) {
+func (t *BuzzTime) registerValidateFunc(fn BuzzTimeValidateFunc) {
 	t.validateFuncs = append(t.validateFuncs, fn)
 }

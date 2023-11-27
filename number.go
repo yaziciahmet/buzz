@@ -63,7 +63,7 @@ func (n *BuzzNumber[T]) Clone() BuzzField {
 }
 
 func (n *BuzzNumber[T]) Gt(num T) *BuzzNumber[T] {
-	n.addValidateFunc(func(v T) error {
+	n.registerValidateFunc(func(v T) error {
 		if v > num {
 			return nil
 		}
@@ -73,7 +73,7 @@ func (n *BuzzNumber[T]) Gt(num T) *BuzzNumber[T] {
 }
 
 func (n *BuzzNumber[T]) Gte(num T) *BuzzNumber[T] {
-	n.addValidateFunc(func(v T) error {
+	n.registerValidateFunc(func(v T) error {
 		if v >= num {
 			return nil
 		}
@@ -83,7 +83,7 @@ func (n *BuzzNumber[T]) Gte(num T) *BuzzNumber[T] {
 }
 
 func (n *BuzzNumber[T]) Lt(num T) *BuzzNumber[T] {
-	n.addValidateFunc(func(v T) error {
+	n.registerValidateFunc(func(v T) error {
 		if v < num {
 			return nil
 		}
@@ -93,7 +93,7 @@ func (n *BuzzNumber[T]) Lt(num T) *BuzzNumber[T] {
 }
 
 func (n *BuzzNumber[T]) Lte(num T) *BuzzNumber[T] {
-	n.addValidateFunc(func(v T) error {
+	n.registerValidateFunc(func(v T) error {
 		if v <= num {
 			return nil
 		}
@@ -103,7 +103,7 @@ func (n *BuzzNumber[T]) Lte(num T) *BuzzNumber[T] {
 }
 
 func (n *BuzzNumber[T]) Positive() *BuzzNumber[T] {
-	n.addValidateFunc(func(v T) error {
+	n.registerValidateFunc(func(v T) error {
 		if v <= 0 {
 			return MakeFieldError(n.name, "Positive", fmt.Sprintf("%s must be positive", n.name))
 		}
@@ -113,7 +113,7 @@ func (n *BuzzNumber[T]) Positive() *BuzzNumber[T] {
 }
 
 func (n *BuzzNumber[T]) Nonnegative() *BuzzNumber[T] {
-	n.addValidateFunc(func(v T) error {
+	n.registerValidateFunc(func(v T) error {
 		if v < 0 {
 			return MakeFieldError(n.name, "Nonnegative", fmt.Sprintf("%s must be nonnegative", n.name))
 		}
@@ -123,7 +123,7 @@ func (n *BuzzNumber[T]) Nonnegative() *BuzzNumber[T] {
 }
 
 func (n *BuzzNumber[T]) Negative() *BuzzNumber[T] {
-	n.addValidateFunc(func(v T) error {
+	n.registerValidateFunc(func(v T) error {
 		if v >= 0 {
 			return MakeFieldError(n.name, "Negative", fmt.Sprintf("%s must be negative", n.name))
 		}
@@ -133,7 +133,7 @@ func (n *BuzzNumber[T]) Negative() *BuzzNumber[T] {
 }
 
 func (n *BuzzNumber[T]) Nonpositive() *BuzzNumber[T] {
-	n.addValidateFunc(func(v T) error {
+	n.registerValidateFunc(func(v T) error {
 		if v > 0 {
 			return MakeFieldError(n.name, "Nonpositive", fmt.Sprintf("%s must be nonpositive", n.name))
 		}
@@ -143,10 +143,10 @@ func (n *BuzzNumber[T]) Nonpositive() *BuzzNumber[T] {
 }
 
 func (n *BuzzNumber[T]) Custom(fn BuzzNumberValidateFunc[T]) *BuzzNumber[T] {
-	n.addValidateFunc(fn)
+	n.registerValidateFunc(fn)
 	return n
 }
 
-func (n *BuzzNumber[T]) addValidateFunc(fn BuzzNumberValidateFunc[T]) {
+func (n *BuzzNumber[T]) registerValidateFunc(fn BuzzNumberValidateFunc[T]) {
 	n.validateFuncs = append(n.validateFuncs, fn)
 }

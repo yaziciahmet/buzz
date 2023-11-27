@@ -63,7 +63,7 @@ func (s *BuzzString) Clone() BuzzField {
 }
 
 func (s *BuzzString) Min(min int) *BuzzString {
-	s.addValidateFunc(func(v string) error {
+	s.registerValidateFunc(func(v string) error {
 		if min > len(v) {
 			return MakeFieldError(s.name, "Min", fmt.Sprintf("%s must have minimum %d characters", s.name, min))
 		}
@@ -73,7 +73,7 @@ func (s *BuzzString) Min(min int) *BuzzString {
 }
 
 func (s *BuzzString) Max(max int) *BuzzString {
-	s.addValidateFunc(func(v string) error {
+	s.registerValidateFunc(func(v string) error {
 		if max < len(v) {
 			return MakeFieldError(s.name, "Max", fmt.Sprintf("%s must have maximum %d characters", s.name, max))
 		}
@@ -83,7 +83,7 @@ func (s *BuzzString) Max(max int) *BuzzString {
 }
 
 func (s *BuzzString) Len(l int) *BuzzString {
-	s.addValidateFunc(func(v string) error {
+	s.registerValidateFunc(func(v string) error {
 		if l != len(v) {
 			return MakeFieldError(s.name, "Len", fmt.Sprintf("%s must have %d characters", s.name, l))
 		}
@@ -93,7 +93,7 @@ func (s *BuzzString) Len(l int) *BuzzString {
 }
 
 func (s *BuzzString) Email() *BuzzString {
-	s.addValidateFunc(func(v string) error {
+	s.registerValidateFunc(func(v string) error {
 		if _, err := mail.ParseAddress(v); err != nil {
 			return MakeFieldError(s.name, "Email", "invalid email")
 		}
@@ -103,7 +103,7 @@ func (s *BuzzString) Email() *BuzzString {
 }
 
 func (s *BuzzString) URL() *BuzzString {
-	s.addValidateFunc(func(v string) error {
+	s.registerValidateFunc(func(v string) error {
 		if _, err := url.ParseRequestURI(v); err != nil {
 			return MakeFieldError(s.name, "URL", "invalid url")
 		}
@@ -114,7 +114,7 @@ func (s *BuzzString) URL() *BuzzString {
 
 func (s *BuzzString) Regex(regex string) *BuzzString {
 	r, err := regexp.Compile(regex)
-	s.addValidateFunc(func(v string) error {
+	s.registerValidateFunc(func(v string) error {
 		if err != nil {
 			return err
 		}
@@ -129,7 +129,7 @@ func (s *BuzzString) Regex(regex string) *BuzzString {
 }
 
 func (s *BuzzString) Contains(str string) *BuzzString {
-	s.addValidateFunc(func(v string) error {
+	s.registerValidateFunc(func(v string) error {
 		if !strings.Contains(v, str) {
 			return MakeFieldError(s.name, "Contains", fmt.Sprintf("%s must contain %s", s.name, str))
 		}
@@ -139,7 +139,7 @@ func (s *BuzzString) Contains(str string) *BuzzString {
 }
 
 func (s *BuzzString) StartsWith(str string) *BuzzString {
-	s.addValidateFunc(func(v string) error {
+	s.registerValidateFunc(func(v string) error {
 		if !strings.HasPrefix(v, str) {
 			return MakeFieldError(s.name, "StartsWith", fmt.Sprintf("%s must start with %s", s.name, str))
 		}
@@ -149,7 +149,7 @@ func (s *BuzzString) StartsWith(str string) *BuzzString {
 }
 
 func (s *BuzzString) EndsWith(str string) *BuzzString {
-	s.addValidateFunc(func(v string) error {
+	s.registerValidateFunc(func(v string) error {
 		if !strings.HasSuffix(v, str) {
 			return MakeFieldError(s.name, "EndsWith", fmt.Sprintf("%s must end with %s", s.name, str))
 		}
@@ -159,7 +159,7 @@ func (s *BuzzString) EndsWith(str string) *BuzzString {
 }
 
 func (s *BuzzString) UUID() *BuzzString {
-	s.addValidateFunc(func(v string) error {
+	s.registerValidateFunc(func(v string) error {
 		if len(v) != 36 {
 			return MakeFieldError(s.name, "UUID", fmt.Sprintf("%s has invalid length", s.name))
 		}
@@ -184,11 +184,11 @@ func (s *BuzzString) UUID() *BuzzString {
 }
 
 func (s *BuzzString) Custom(fn BuzzStringValidateFunc) *BuzzString {
-	s.addValidateFunc(fn)
+	s.registerValidateFunc(fn)
 	return s
 }
 
-func (s *BuzzString) addValidateFunc(fn BuzzStringValidateFunc) {
+func (s *BuzzString) registerValidateFunc(fn BuzzStringValidateFunc) {
 	s.validateFuncs = append(s.validateFuncs, fn)
 }
 

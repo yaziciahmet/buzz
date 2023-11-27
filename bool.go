@@ -59,7 +59,7 @@ func (b *BuzzBool) Clone() BuzzField {
 }
 
 func (b *BuzzBool) True() *BuzzBool {
-	b.addValidateFunc(func(v bool) error {
+	b.registerValidateFunc(func(v bool) error {
 		if v {
 			return nil
 		}
@@ -69,7 +69,7 @@ func (b *BuzzBool) True() *BuzzBool {
 }
 
 func (b *BuzzBool) False() *BuzzBool {
-	b.addValidateFunc(func(v bool) error {
+	b.registerValidateFunc(func(v bool) error {
 		if !v {
 			return nil
 		}
@@ -79,10 +79,10 @@ func (b *BuzzBool) False() *BuzzBool {
 }
 
 func (b *BuzzBool) Custom(fn BuzzBoolValidateFunc) *BuzzBool {
-	b.addValidateFunc(fn)
+	b.registerValidateFunc(fn)
 	return b
 }
 
-func (b *BuzzBool) addValidateFunc(fn BuzzBoolValidateFunc) {
+func (b *BuzzBool) registerValidateFunc(fn BuzzBoolValidateFunc) {
 	b.validateFuncs = append(b.validateFuncs, fn)
 }

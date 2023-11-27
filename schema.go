@@ -114,11 +114,11 @@ func (s *BuzzSchema[T]) Fields() []BuzzField {
 }
 
 func (s *BuzzSchema[T]) Custom(fn BuzzSchemaValidateFunc[T]) *BuzzSchema[T] {
-	s.addValidateFunc(fn)
+	s.registerValidateFunc(fn)
 	return s
 }
 
-func (s *BuzzSchema[T]) addValidateFunc(fn BuzzSchemaValidateFunc[T]) {
+func (s *BuzzSchema[T]) registerValidateFunc(fn BuzzSchemaValidateFunc[T]) {
 	s.validateFuncs = append(s.validateFuncs, fn)
 }
 

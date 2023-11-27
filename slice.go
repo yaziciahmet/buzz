@@ -71,7 +71,7 @@ func (s *BuzzSlice[T]) Clone() BuzzField {
 }
 
 func (s *BuzzSlice[T]) Min(min int) *BuzzSlice[T] {
-	s.addValidateFunc(func(v []T) error {
+	s.registerValidateFunc(func(v []T) error {
 		if min > len(v) {
 			return MakeFieldError(s.name, "Min", fmt.Sprintf("%s must have minimum %d elements", s.name, min))
 		}
@@ -81,7 +81,7 @@ func (s *BuzzSlice[T]) Min(min int) *BuzzSlice[T] {
 }
 
 func (s *BuzzSlice[T]) Max(max int) *BuzzSlice[T] {
-	s.addValidateFunc(func(v []T) error {
+	s.registerValidateFunc(func(v []T) error {
 		if max < len(v) {
 			return MakeFieldError(s.name, "Max", fmt.Sprintf("%s must have maximum %d elements", s.name, max))
 		}
@@ -91,7 +91,7 @@ func (s *BuzzSlice[T]) Max(max int) *BuzzSlice[T] {
 }
 
 func (s *BuzzSlice[T]) Len(l int) *BuzzSlice[T] {
-	s.addValidateFunc(func(v []T) error {
+	s.registerValidateFunc(func(v []T) error {
 		if l != len(v) {
 			return MakeFieldError(s.name, "Len", fmt.Sprintf("%s must have %d elements", s.name, l))
 		}
@@ -101,7 +101,7 @@ func (s *BuzzSlice[T]) Len(l int) *BuzzSlice[T] {
 }
 
 func (s *BuzzSlice[T]) Nonempty() *BuzzSlice[T] {
-	s.addValidateFunc(func(v []T) error {
+	s.registerValidateFunc(func(v []T) error {
 		if len(v) == 0 {
 			return nonEmptyFieldErr(s.name)
 		}
@@ -116,7 +116,7 @@ func (s *BuzzSlice[T]) Nonnil() *BuzzSlice[T] {
 }
 
 func (s *BuzzSlice[T]) ForEach(fn BuzzSliceElementValidateFunc[T]) *BuzzSlice[T] {
-	s.addValidateFunc(func(v []T) error {
+	s.registerValidateFunc(func(v []T) error {
 		for _, el := range v {
 			if err := fn(el); err != nil {
 				return err
@@ -128,10 +128,10 @@ func (s *BuzzSlice[T]) ForEach(fn BuzzSliceElementValidateFunc[T]) *BuzzSlice[T]
 }
 
 func (s *BuzzSlice[T]) Custom(fn BuzzSliceValidateFunc[T]) *BuzzSlice[T] {
-	s.addValidateFunc(fn)
+	s.registerValidateFunc(fn)
 	return s
 }
 
-func (s *BuzzSlice[T]) addValidateFunc(fn BuzzSliceValidateFunc[T]) {
+func (s *BuzzSlice[T]) registerValidateFunc(fn BuzzSliceValidateFunc[T]) {
 	s.validateFuncs = append(s.validateFuncs, fn)
 }
