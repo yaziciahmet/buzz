@@ -309,3 +309,24 @@ func Test_SchemaReuseFieldInDifferentSchemas(t *testing.T) {
 		t.FailNow()
 	}
 }
+
+func Test_SchemaValidateErrorAggregator(t *testing.T) {
+	err := Schema[User](
+		Field("Id", Number[int]().Gte(0).Lte(1000)),
+		Field("Name", String().Min(2).Max(20)),
+		Field("Email", String().Email()),
+	).Validate(User{
+		Id:    10000,
+		Name:  "a",
+		Email: "ahmetmail.com",
+	})
+
+	errAggr, ok := err.(*FieldErrorAggregator)
+	if !ok {
+		t.FailNow()
+	}
+
+	if len(errAggr.Errors) != 3 {
+		t.FailNow()
+	}
+}
