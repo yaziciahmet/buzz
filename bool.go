@@ -63,7 +63,7 @@ func (b *BuzzBool) True() *BuzzBool {
 		if v {
 			return nil
 		}
-		return MakeFieldError("", "true", "expected true")
+		return MakeFieldError(b.name, "True", fmt.Sprintf("expected %s to be true", b.name))
 	})
 	return b
 }
@@ -73,7 +73,7 @@ func (b *BuzzBool) False() *BuzzBool {
 		if !v {
 			return nil
 		}
-		return MakeFieldError("", "false", "expected false")
+		return MakeFieldError(b.name, "False", fmt.Sprintf("expected %s to be false", b.name))
 	})
 	return b
 }

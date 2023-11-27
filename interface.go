@@ -84,7 +84,7 @@ func (i *BuzzInterface[T]) MustBeType(typ T) *BuzzInterface[T] {
 	i.addValidateFunc(func(v T) error {
 		actualType := reflect.TypeOf(v)
 		if expectedType != actualType {
-			return MakeFieldError("", "mustbetype", "mustbetype failed")
+			return MakeFieldError(i.name, "MustBeType", fmt.Sprintf(invalidTypeMsg, expectedType, v))
 		}
 
 		return nil

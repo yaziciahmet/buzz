@@ -77,7 +77,7 @@ func (m *BuzzMap[K, V]) Nonnil() *BuzzMap[K, V] {
 func (m *BuzzMap[K, V]) Nonempty() *BuzzMap[K, V] {
 	m.addValidateFunc(func(v map[K]V) error {
 		if len(v) == 0 {
-			return MakeFieldError("", "nonnil", "nonnil failed")
+			return nonEmptyFieldErr(m.name)
 		}
 		return nil
 	})
@@ -87,7 +87,7 @@ func (m *BuzzMap[K, V]) Nonempty() *BuzzMap[K, V] {
 func (m *BuzzMap[K, V]) ContainsKey(key K) *BuzzMap[K, V] {
 	m.addValidateFunc(func(v map[K]V) error {
 		if _, ok := v[key]; !ok {
-			return MakeFieldError("", "containskey", "containskey failed")
+			return MakeFieldError(m.name, "ContainsKey", fmt.Sprintf("map %s does not contain key %v", m.name, key))
 		}
 		return nil
 	})

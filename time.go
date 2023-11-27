@@ -64,7 +64,7 @@ func (t *BuzzTime) After(timestamp time.Time) *BuzzTime {
 		if v.After(timestamp) {
 			return nil
 		}
-		return MakeFieldError("", "after", "after failed")
+		return MakeFieldError(t.name, "After", fmt.Sprintf("%s must be after %s", t.name, timestamp))
 	})
 	return t
 }
@@ -74,7 +74,7 @@ func (t *BuzzTime) Before(timestamp time.Time) *BuzzTime {
 		if v.Before(timestamp) {
 			return nil
 		}
-		return MakeFieldError("", "before", "before failed")
+		return MakeFieldError(t.name, "Before", fmt.Sprintf("%s must be before %s", t.name, timestamp))
 	})
 	return t
 }
@@ -82,7 +82,7 @@ func (t *BuzzTime) Before(timestamp time.Time) *BuzzTime {
 func (t *BuzzTime) NotAfter(timestamp time.Time) *BuzzTime {
 	t.addValidateFunc(func(v time.Time) error {
 		if v.After(timestamp) {
-			return MakeFieldError("", "notAfter", "notAfter failed")
+			return MakeFieldError(t.name, "NotAfter", fmt.Sprintf("%s must not be after %s", t.name, timestamp))
 		}
 		return nil
 	})
@@ -92,7 +92,7 @@ func (t *BuzzTime) NotAfter(timestamp time.Time) *BuzzTime {
 func (t *BuzzTime) NotBefore(timestamp time.Time) *BuzzTime {
 	t.addValidateFunc(func(v time.Time) error {
 		if v.Before(timestamp) {
-			return MakeFieldError("", "notBefore", "notBefore failed")
+			return MakeFieldError(t.name, "NotBefore", fmt.Sprintf("%s must not be before %s", t.name, timestamp))
 		}
 		return nil
 	})

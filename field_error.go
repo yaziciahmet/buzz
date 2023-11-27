@@ -5,6 +5,7 @@ import "fmt"
 const (
 	invalidTypeMsg = "invalid type. expected: %s received: %T"
 	notNullableMsg = "%s is not nullable"
+	nonEmptyMsg    = "%s can not be empty"
 )
 
 type FieldError struct {
@@ -26,7 +27,11 @@ func (e FieldError) Error() string {
 }
 
 func notNullableFieldErr(name string) FieldError {
-	return MakeFieldError(name, "nonnil", fmt.Sprintf(notNullableMsg, name))
+	return MakeFieldError(name, "Nonnil", fmt.Sprintf(notNullableMsg, name))
+}
+
+func nonEmptyFieldErr(name string) FieldError {
+	return MakeFieldError(name, "Nonempty", fmt.Sprintf(nonEmptyMsg, name))
 }
 
 type FieldErrorAggregator struct {
