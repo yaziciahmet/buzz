@@ -2,13 +2,14 @@ package buzz
 
 import (
 	"errors"
+	"regexp"
 	"testing"
 	"time"
 )
 
 func Benchmark_SimpleStruct(b *testing.B) {
 	schema := Schema[User](
-		Field("Id", Number[int]().Min(0).Max(1000)),
+		Field("Id", Number[int]().Gte(0).Lte(1000)),
 		Field("Name", String().Min(2).Max(20)),
 		Field("Email", String().Email()),
 	)
@@ -27,7 +28,7 @@ func Benchmark_SimpleStruct(b *testing.B) {
 
 func Benchmark_SimpleStructParallel(b *testing.B) {
 	schema := Schema[User](
-		Field("Id", Number[int]().Min(0).Max(1000)),
+		Field("Id", Number[int]().Gte(0).Lte(1000)),
 		Field("Name", String().Min(2).Max(20)),
 		Field("Email", String().Email()),
 	)
@@ -53,7 +54,7 @@ func Benchmark_ComplexStruct(b *testing.B) {
 		Field("Id", Number[int]()),
 		Field("Email", String()),
 		Field("Spouse", Ptr(Schema[User](
-			Field("Id", Number[int]().Min(1)),
+			Field("Id", Number[int]().Gte(1)),
 			Field("Email", String().Email()),
 			Field("Name", String()),
 		))),
@@ -122,7 +123,7 @@ func Benchmark_ComplexStructParallel(b *testing.B) {
 		Field("Id", Number[int]()),
 		Field("Email", String()),
 		Field("Spouse", Ptr(Schema[User](
-			Field("Id", Number[int]().Min(1)),
+			Field("Id", Number[int]().Gte(1)),
 			Field("Email", String().Email()),
 			Field("Name", String()),
 		))),
@@ -184,4 +185,14 @@ func Benchmark_ComplexStructParallel(b *testing.B) {
 			schema.Validate(complexStruct1)
 		}
 	})
+}
+
+func BenchmarkMail(b *testing.B) {
+	email := "ahmetyazc@gmail.com"
+	emailRegex := regexp.MustCompile(`^[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,4}$`)
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		emailRegex.MatchString(email)
+	}
 }

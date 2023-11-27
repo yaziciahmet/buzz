@@ -62,22 +62,42 @@ func (n *BuzzNumber[T]) Clone() BuzzField {
 	}
 }
 
-func (n *BuzzNumber[T]) Min(min T) *BuzzNumber[T] {
+func (n *BuzzNumber[T]) Gt(num T) *BuzzNumber[T] {
 	n.addValidateFunc(func(v T) error {
-		if min > v {
-			return MakeFieldError("", "min", "min failed")
+		if v > num {
+			return nil
 		}
-		return nil
+		return MakeFieldError(n.name, "Gt", fmt.Sprintf("%s must be greater than %v", n.name, num))
 	})
 	return n
 }
 
-func (n *BuzzNumber[T]) Max(max T) *BuzzNumber[T] {
+func (n *BuzzNumber[T]) Gte(num T) *BuzzNumber[T] {
 	n.addValidateFunc(func(v T) error {
-		if max < v {
-			return MakeFieldError("", "max", "max failed")
+		if v >= num {
+			return nil
 		}
-		return nil
+		return MakeFieldError(n.name, "Gte", fmt.Sprintf("%s must be greate than or equal to %v", n.name, num))
+	})
+	return n
+}
+
+func (n *BuzzNumber[T]) Lt(num T) *BuzzNumber[T] {
+	n.addValidateFunc(func(v T) error {
+		if v < num {
+			return nil
+		}
+		return MakeFieldError(n.name, "Lt", fmt.Sprintf("%s must be less than %v", n.name, num))
+	})
+	return n
+}
+
+func (n *BuzzNumber[T]) Lte(num T) *BuzzNumber[T] {
+	n.addValidateFunc(func(v T) error {
+		if v <= num {
+			return nil
+		}
+		return MakeFieldError(n.name, "Lte", fmt.Sprintf("%s must be less than or equal to %v", n.name, num))
 	})
 	return n
 }
