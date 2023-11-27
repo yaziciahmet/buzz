@@ -1,7 +1,10 @@
 package buzz
 
+import "fmt"
+
 const (
 	invalidTypeMsg = "invalid type. expected: %s received: %T"
+	notNullableMsg = "%s is not nullable"
 )
 
 type FieldError struct {
@@ -22,6 +25,10 @@ func (e FieldError) Error() string {
 	return e.Message
 }
 
+func notNullableFieldErr(name string) FieldError {
+	return MakeFieldError(name, "nonnil", fmt.Sprintf(notNullableMsg, name))
+}
+
 type FieldErrorAggregator struct {
 	Errors []FieldError
 }
@@ -37,7 +44,6 @@ func (a *FieldErrorAggregator) Error() string {
 
 	return a.Errors[0].Error()
 }
-
 
 func (a *FieldErrorAggregator) Handle(err error) error {
 	switch e := err.(type) {

@@ -34,13 +34,16 @@ func (b *BuzzBool) Validate(v any) error {
 		return fmt.Errorf(invalidTypeMsg, boolReflectType, v)
 	}
 
+	errAggr := NewFieldErrorAggregator()
 	for _, valFn := range b.validateFuncs {
 		if err := valFn(vBool); err != nil {
-			return err
+			if errAggr.Handle(err) != nil {
+				return err
+			}
 		}
 	}
 
-	return nil
+	return errAggr.OrNil()
 }
 
 func (b *BuzzBool) WithName(name string) BuzzField {

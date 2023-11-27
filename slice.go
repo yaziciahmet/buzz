@@ -36,7 +36,7 @@ func (s *BuzzSlice[T]) Validate(v any) error {
 			return nil
 		}
 
-		return MakeFieldError("", "nonnil", "slice not nullable")
+		return notNullableFieldErr(s.name)
 	}
 
 	vTSlice, ok := v.([]T)

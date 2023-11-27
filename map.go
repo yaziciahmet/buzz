@@ -35,7 +35,7 @@ func (m *BuzzMap[K, V]) Validate(v any) error {
 			return nil
 		}
 
-		return MakeFieldError("", "nonnil", "map not nullable")
+		return notNullableFieldErr(m.name)
 	}
 
 	vMap, ok := v.(map[K]V)

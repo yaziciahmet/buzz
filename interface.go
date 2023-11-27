@@ -40,16 +40,16 @@ func (i *BuzzInterface[T]) Validate(v any) error {
 			return nil
 		}
 
-		return MakeFieldError("", "nonnil", "interface not nullable")
+		return notNullableFieldErr(i.name)
 	}
 
-	viface, ok := v.(T)
+	vT, ok := v.(T)
 	if !ok {
 		return fmt.Errorf(invalidTypeMsg, i.refType, v)
 	}
 
 	for _, valFn := range i.validateFuncs {
-		if err := valFn(viface); err != nil {
+		if err := valFn(vT); err != nil {
 			return err
 		}
 	}

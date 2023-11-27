@@ -37,7 +37,7 @@ func (p *BuzzPtr) Validate(v any) error {
 			return nil
 		}
 
-		return MakeFieldError("", "nonnil", "pointer is not nullable")
+		return notNullableFieldErr(p.name)
 	}
 
 	if refKind != reflect.Pointer {
@@ -49,7 +49,7 @@ func (p *BuzzPtr) Validate(v any) error {
 			return nil
 		}
 
-		return MakeFieldError("", "nonnil", "pointer is not nullable")
+		return notNullableFieldErr(p.name)
 	}
 
 	refValueElem := refValue.Elem()
