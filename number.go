@@ -37,12 +37,16 @@ func (n *BuzzNumber[T]) Validate(v any) error {
 		return fmt.Errorf(invalidTypeMsg, n.refType, v)
 	}
 
+	errAggr := NewFieldErrorAggregator()
 	for _, valFn := range n.validateFuncs {
 		if err := valFn(vint); err != nil {
-			return err
+			if errAggr.Handle(err) != nil {
+				return err
+			}
 		}
 	}
-	return nil
+
+	return errAggr.OrNil()
 }
 
 func (n *BuzzNumber[T]) WithName(name string) BuzzField {

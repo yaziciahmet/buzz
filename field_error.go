@@ -65,14 +65,16 @@ func (a *FieldErrorAggregator) Add(err FieldError) {
 }
 
 func (a *FieldErrorAggregator) Merge(aggr *FieldErrorAggregator) {
-	a.Errors = append(a.Errors, aggr.Errors...)
+	if !aggr.Empty() {
+		a.Errors = append(a.Errors, aggr.Errors...)
+	}
 }
 
 func (a *FieldErrorAggregator) Empty() bool {
 	return len(a.Errors) == 0
 }
 
-func (a *FieldErrorAggregator) OrNil() *FieldErrorAggregator {
+func (a *FieldErrorAggregator) OrNil() error {
 	if a.Empty() {
 		return nil
 	}

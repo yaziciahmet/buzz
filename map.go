@@ -43,13 +43,16 @@ func (m *BuzzMap[K, V]) Validate(v any) error {
 		return fmt.Errorf(invalidTypeMsg, m.refType, v)
 	}
 
+	errAggr := NewFieldErrorAggregator()
 	for _, valFn := range m.validateFuncs {
 		if err := valFn(vMap); err != nil {
-			return err
+			if errAggr.Handle(err) != nil {
+				return err
+			}
 		}
 	}
 
-	return nil
+	return errAggr.OrNil()
 }
 
 func (m *BuzzMap[K, V]) WithName(name string) BuzzField {

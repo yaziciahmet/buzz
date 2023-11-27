@@ -40,12 +40,16 @@ func (t *BuzzTime) Validate(v any) error {
 		return fmt.Errorf(invalidTypeMsg, timeReflectType, v)
 	}
 
+	errAggr := NewFieldErrorAggregator()
 	for _, valFn := range t.validateFuncs {
 		if err := valFn(vtime); err != nil {
-			return err
+			if errAggr.Handle(err) != nil {
+				return err
+			}
 		}
 	}
-	return nil
+
+	return errAggr.OrNil()
 }
 
 func (t *BuzzTime) Clone() BuzzField {

@@ -48,12 +48,16 @@ func (i *BuzzInterface[T]) Validate(v any) error {
 		return fmt.Errorf(invalidTypeMsg, i.refType, v)
 	}
 
+	errAggr := NewFieldErrorAggregator()
 	for _, valFn := range i.validateFuncs {
 		if err := valFn(vT); err != nil {
-			return err
+			if errAggr.Handle(err) != nil {
+				return err
+			}
 		}
 	}
-	return nil
+
+	return errAggr.OrNil()
 }
 
 func (i *BuzzInterface[T]) WithName(name string) BuzzField {

@@ -44,12 +44,16 @@ func (s *BuzzSlice[T]) Validate(v any) error {
 		return fmt.Errorf(invalidTypeMsg, s.refType, v)
 	}
 
+	errAggr := NewFieldErrorAggregator()
 	for _, valFn := range s.validateFuncs {
 		if err := valFn(vTSlice); err != nil {
-			return err
+			if errAggr.Handle(err) != nil {
+				return err
+			}
 		}
 	}
-	return nil
+
+	return errAggr.OrNil()
 }
 
 func (s *BuzzSlice[T]) WithName(name string) BuzzField {

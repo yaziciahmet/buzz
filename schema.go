@@ -64,21 +64,27 @@ func (s *BuzzSchema[T]) Validate(obj any) error {
 		return fmt.Errorf(invalidTypeMsg, s.refType, obj)
 	}
 
+	errAggr := NewFieldErrorAggregator()
+
 	valueObj := reflect.ValueOf(obj)
 	for _, f := range s.fields {
 		valueField := valueObj.FieldByName(f.Name())
 		if err := f.Validate(valueField.Interface()); err != nil {
-			return err
+			if errAggr.Handle(err) != nil {
+				return err
+			}
 		}
 	}
 
 	for _, valFn := range s.validateFuncs {
 		if err := valFn(objT); err != nil {
-			return err
+			if errAggr.Handle(err) != nil {
+				return err
+			}
 		}
 	}
 
-	return nil
+	return errAggr.OrNil()
 }
 
 func (s *BuzzSchema[T]) Name() string {

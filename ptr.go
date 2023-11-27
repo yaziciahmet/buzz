@@ -62,6 +62,7 @@ func (p *BuzzPtr) Validate(v any) error {
 
 func (p *BuzzPtr) WithName(name string) BuzzField {
 	p.name = name
+	p.field.WithName(name)
 	return p
 }
 
